@@ -16,3 +16,4 @@ This allows you to have the chattio close when you launch the Mini Chatter.
  -Set BoldColor=0e
  -Set SystemColor=0b
 These allow you to change the text colors for Regular, Bold, and System Text.
+
