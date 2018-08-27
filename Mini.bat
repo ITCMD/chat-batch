@@ -101,7 +101,6 @@ for /F "tokens=1-8 delims=%time.delims%" %%a in ("%Input%") do (
     set "%~1=%@h%%time.delims:~0,1%%@m%%time.delims:~0,1%%@s%%time.delims:~1,1%%@c%"
     exit /b
 )
-
 :c
 set "param=^%~2" !
 set "param=!param:"=\"!"
