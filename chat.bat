@@ -148,10 +148,14 @@ md "%fold2%\chat batch file\"
 copy "%~0" "%fold2%\chat.bat"
 call :c 02 "Downloading Mini Chatter . . ."
 bitsadmin /transfer myDownloadJob /download /priority High  https://raw.githubusercontent.com/ITCMD/chat-batch/master/Mini.bat "%fold2%\Mini.bat" >nul
+bitsadmin /transfer myDownloadJob /download /priority High  https://raw.githubusercontent.com/ITCMD/chat-batch/master/DefaultSettings.txt "%fold2%\Settings.txt" >nul
 for /f "delims=[] tokens=2" %%a in ('ping -4 -n 1 %ComputerName% ^| findstr [') do set NetworkIP=%%a
 call :c 0a "Sharing Folder..."
 net share CHAT=%fold% /GRANT:Everyone,FULL
 Icacls %fold% /grant Everyone:F /inheritance:e /T
+Icacls "%fold2%\Settings.txt" /grant Everyone:(RX)
+Icacls "%fold2%\Mini.bat" /grant Everyone:(RX)
+Icacls "%fold2%\Local.cmd" /grant Everyone:(RX)
 echo Completed.
 echo.
 echo Done
