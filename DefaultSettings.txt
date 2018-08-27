@@ -1,0 +1,18 @@
+Apart from the default you can do the following commands in the settings.cmd
+
+ -cmdwiz setwindowtransparency 1-99
+This allows you to make the window Transparent
+ -mode con: cols=80lines=30
+This allows you to set the window width and height.
+ -set skype=skype.ID
+This allows you to set your skype ID for when you dial someone on skype.
+ -set color=0f
+This allows you to set your own default color for the console.
+ -Set 404=Force
+This allows you to force a 404 error to continue after error.
+ -Set MiniClose=Yes
+This allows you to have the chattio close when you launch the Mini Chatter.
+ -Set TextColor=0a
+ -Set BoldColor=0e
+ -Set SystemColor=0b
+These allow you to change the text colors for Regular, Bold, and System Text.
