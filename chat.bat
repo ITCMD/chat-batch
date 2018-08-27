@@ -130,7 +130,10 @@ netsh advfirewall firewall set rule group="File and Printer Sharing" new enable=
 call :c 0a "Setting encryption to Correct Bit"
 reg add HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0 /v NtlmMinClientSec /t REG_DWORD /d 0 /f
 reg add HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0 /v NtlmMinServerSec /t REG_DWORD /d 0 /f
-call :c 0a "Creating Folder"
+call :c 0a "Dissabling pasword protection for folder . . ."
+reg add Computer\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa /v everyoneincludesanonymous /t REG_DWORD /d 1 /f
+reg add Computer\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters /v restrictnullsessaccess /t REG_DWORD /d 0 /f
+call :c 0a "Creating Folder . . ."
 if %cusf%==n set fold="C:\users\%username%\CHAT"
 if %cusf%==n if not exist %Fold% md %fold%
 call :c 0a "Setting Up Files . . ."
@@ -168,10 +171,34 @@ echo.
 call :c 0a "Press any key to continue . . ."
 pause>nul
 cls
-echo The File Will now restart. You can connect to the server now.
+call :c a0 "The Computer now needs to restart"
+echo Would you like to do this now?
+choice /c YN
+if %errorlevel%==2 goto alt
+restart /r /t 20 /c "This PC Will restart in twenty seconds to apply changes. Once the PC has restarted you can connect to your PC with localhost as the server name. Others can connect with %host%."
+exit /b
+
+:alt
+cls
+echo Restart will not occur.
+call :c 0a "Note: You can work around the need to restart by changing a couple of things in the Control Panel."
+call :c 02 "Would You like to do this now?"
+choice /c YN
+if %errorlevel%==2 goto noalt
+cls
+echo When The Control Panel Opens click on the "All Networks" tab on the bottom of the page.
+echo.
+echo Then click "Turn Off Password Protected Sharing."
+echo.
+echo Then Press "Save Changes".
 timeout /t 3 >nul
+control /name Microsoft.NetworkAndSharingCenter /page Advanced
+pause
+call :c 0a "Thank you! The program will now relaunch."
 start "" "%~0"
+timeout /t 2 >nul
 exit
+
 
 :connect
 cls
