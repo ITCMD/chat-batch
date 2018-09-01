@@ -1,5 +1,6 @@
 # chat-batch
 A Full Chat Batch Program that uses LAN (compatible with LogMeIn Hamachi)
+NOTE: Only supports Windows 10 at this time. A Windows 7 version will be released once complete.
   (https://www.vpn.net/)
   
   
