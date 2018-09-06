@@ -8,6 +8,8 @@ This allows you to set the window width and height.
 This allows you to set your skype ID for when you dial someone on skype.
  -set color=0f
 This allows you to set your own default color for the console.
+ -Set alwaysScan=True
+This allows you to force the antivirus to scan every file you download.
  -Set 404=Force
 This allows you to force a 404 error to continue after error.
  -Set MiniClose=Yes
