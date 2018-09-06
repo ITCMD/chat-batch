@@ -13,3 +13,7 @@ Wherever you are pay atention to the title bar. It will show what keys you can u
 ![Image](https://s8.postimg.cc/z0txjt1f9/Title.png)
 
 Pressing O in the main window to open options. Or, for help with talk commands press T and type in -H.
+
+# Updates:
+
+Now Supports Antivirus!
