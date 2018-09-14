@@ -17,3 +17,9 @@ Pressing O in the main window to open options. Or, for help with talk commands p
 # Updates:
 
 Now Supports Antivirus!
+Now has an automatic updater!
+
+
+
+# Hamachi
+The hamachi.exe is the version it was designed to use. Using a newer version should not negatively effect any features of this program, but we wanted to include the file for others to use. At the time of posting, the included version is the latest update.
