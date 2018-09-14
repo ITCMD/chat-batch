@@ -3664,6 +3664,7 @@ call :c a0 "Update Installed."
 call :c 08 "Cleaning up . . ."
 del /f /q "chatUPDATE.txt"
 del /f /q "update.bat"
+del /f /q "versionDownload.txt"
 timeout /t 2 >nul
 call :c 08 "Cleanup complete."
 echo.
