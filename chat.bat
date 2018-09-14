@@ -1,7 +1,6 @@
 @echo off
 if exist dir.txt cd ..
-set version=[10.28.3]
-call :c 08 "Running ITCMDCOS version %version%   http://www.itcommand.tech"
+set version=[10.28.4]
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
@@ -22,6 +21,7 @@ if not exist tick.wav goto notick
 if %setup%==True goto setupss
 if not exist settings.cmd goto findserver
 ::Presets
+call :c 08 "Running ITCMDCOS version %version%   http://www.itcommand.tech"
 set color=07
 set 404=Exit
 set BoldColor=0e
@@ -3652,7 +3652,7 @@ echo echo Installing Update . . .
 echo if not exist chatUPDATE.txt echo ERROR ^&pause ^&exit /b
 echo copy /b/v/y "chatUPDATE.txt" "%~nx0" ^>nul
 echo start "" "%~nx0" updated
-echo timeout /t 2 >nul
+echo timeout /t 2 ^>nul
 echo exit)>>update.bat
 start "" "update.bat"
 exit 
