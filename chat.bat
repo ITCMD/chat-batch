@@ -1,15 +1,16 @@
 @echo off
+if exist dir.txt cd ..
+set version=[10.28.2]
 set setup=False
 setlocal EnableDelayedExpansion
-for /F "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E# & echo on & for %%b in (1) do rem"') do (
-  set "DEL=%%a"
-)
+if "%~1"=="notif1" goto Enable1
+if "%~1"=="updated" goto cleanupdate
+if "%~1"=="notif0" goto Dissable0
+if "%~1"=="antivirual" goto antiviral
+if "%~1"=="Notif" goto notifadmin
 if "%~1"=="Admin" (call :c 0e "Loading as admin . . ." & echo %cd%>C:\users\Public\CDC.txt & powershell start -verb runas '%0' am_admin & exit /b)
 if "%~1"=="am_admin" set setup=True
 if not exist C:\users\Public\chat md C:\users\Public\chat
-::call :c 0b "^!<>&| abc123 %%%%"*?"
-rem Prepare a file "X" with only one dot
-<nul > X set /p ".=."
 :topreset
 if not exist lc.exe goto nolc
 :backlc
@@ -27,9 +28,49 @@ set TextColor=0a
 set endl=No
 set SystemColor=0b
 set MiniClose=No
+set alwaysScan=False
+set debug=No
 call settings.cmd
 color %color%
-set >set.txt
+if not exist \\%him%\chat\Notif\Notif.bat call :404 "Notif.bat"
+if not exist Notif\ md Notif\
+copy "\\%him%\CHAT\Notif\Notif.bat" "Notif\Notif.bat" >nul
+copy "settings.cmd" "Notif\settings.cmd" >nul
+(echo %~0)> "Notif\dir.txt
+if not exist Notif\Notif.vbs goto skipnotif
+echo Dim WinScriptHost >"Notif\Notif.vbs"
+echo set WinScriptHost = CreateObject("wscript.shell")>>"Notif\Notif.vbs"
+echo WinScriptHost.CurrentDirectory = "%cd%\Notif">>"Notif\Notif.vbs"
+(echo  WinScriptHost.Run chr(34^) ^& "%cd%\Notif\Notif.bat" ^& chr(34^), 0)>>"Notif\Notif.vbs"
+(echo Set WinScriptHost = Nothing)>>"Notif\Notif.vbs"
+:skipnotif
+if exist NoNotif goto skipnotif2
+if defined NotifSupress goto skipnotif2
+schtasks /query /TN ITCMD-CHAT-NOTIF | find "ITCMD-CHAT-NOTIF                         N/A                    Ready">nul
+if %errorlevel%==0 goto skipnotif2
+cls
+call :c 0c "Log On Notifications are dissabled. Would you like to enable them now?"
+call :c 08 "You can change this later in the Options Menu"
+choice /c YN
+cls
+if %errorlevel%==1 goto getnotif
+call :c 0f "Would you like to supress this message?"
+choice /c YN
+if %errorlevel%==1 echo. >NoNotif
+goto skipnotif2
+:getnotif
+call :c f0 "Loading As Administrator . . ."
+echo %cd%>C:\users\Public\CDC.txt
+powershell start -verb runas '%0' Notif & exit /b
+:notifadmin
+set /p cdd=<C:\users\Public\CDC.txt
+cd %cdd%
+call :c 0a "Enabling Notifiactions . . ."
+schtasks /Create /TN ITCMD-CHAT-NOTIF /SC ONLOGON /tr "%cd%\Notif\Notif.vbs" /F
+goto topreset
+:skipnotif2
+cls
+if %debug%==Yes set >set.txt
 if not exist \\%him%\CHAT\ goto offline
 if not exist \\%him%\chat\Local.cmd call :404 "Local.cmd"
 if not exist \\%him%\chat\Users.log call :404 "Users.Log"
@@ -223,8 +264,11 @@ echo [Hostname]-[Username] >"%fold2%\Users.log"
 md "%fold2%\chat batch file\"
 copy "%~0" "%fold2%\chat.bat"
 call :c 02 "Downloading Mini Chatter . . ."
+if not exist "%fold2%\Notif\" md "%fold2%\Notif"
 bitsadmin /transfer myDownloadJob /download /priority High  https://raw.githubusercontent.com/ITCMD/chat-batch/master/Mini.bat "%fold2%\Mini.bat" >nul
 bitsadmin /transfer myDownloadJob /download /priority High  https://raw.githubusercontent.com/ITCMD/chat-batch/master/DefaultSettings.txt "%fold2%\Settings.txt" >nul
+bitsadmin /transfer myDownloadJob /download /priority High  https://raw.githubusercontent.com/ITCMD/chat-batch/master/notif.bat "%fold2%\Notif\Notif.bat" >nul
+
 for /f "delims=[] tokens=2" %%a in ('ping -4 -n 1 %ComputerName% ^| findstr [') do set NetworkIP=%%a
 call :c 0a "Sharing Folder..."
 net share CHAT=%fold% /GRANT:Everyone,FULL
@@ -2670,6 +2714,9 @@ cls
 if /I "%MiniClose%"=="Yes" exit /b
 goto type
 
+:mini2
+
+
 :setting
 Title OPTIONS      CB Chattio
 cls
@@ -2683,16 +2730,44 @@ call :c 0f "3] Edit Settings.CMD"
 call :c 0f "4] Force Chat Clear"
 call :c 0f "5] View Log" 
 call :c 0f "6] Ban Users"
-call :c 07 "7] Exit"
-choice /c "1234567"
+schtasks /query /TN ITCMD-CHAT-NOTIF 2>nul| find "ITCMD-CHAT-NOTIF                         N/A                    Ready">nul 
+if %errorlevel%==0 call :c 0f "7] Dissable Notifications"
+if %errorlevel%==1 call :c 0f "7] Enable Notifications"
+call :c 07 "8] Exit"
+choice /c "12345678"
 if %errorlevel%==1 goto sound
 if %errorlevel%==2 goto cmdvar
 if %errorlevel%==3 notepad "settings.cmd" & cls & goto topreset
 if %errorlevel%==4 call :c 0c "Clearing Chat . . ." & timeout /t 2 >nul & goto clear20
 if %errorlevel%==5 goto log
 if %errorlevel%==6 goto ban
+if %errorlevel%==7 goto notifTog
 cls & goto type
 
+:notifTog
+cls
+schtasks /query /TN ITCMD-CHAT-NOTIF 2>nul | find "ITCMD-CHAT-NOTIF                         N/A                    Ready">nul
+set do=%errorlevel%
+call :c 0a "Loading Admin Prompt . . ."
+echo %cd%>C:\users\Public\CDC.txt
+powershell start -verb runas '%0' notif%do% & exit /b
+
+:Dissable0
+set /p cdd=<C:\users\Public\CDC.txt
+cd %cdd%
+call :c 0a "Dissabling Notifications . . ."
+schtasks /Delete /TN ITCMD-CHAT-NOTIF /f >nul
+timeout /t 2 >nul
+set NotifSupress=True
+goto topreset
+
+:Enable1
+set /p cdd=<C:\users\Public\CDC.txt
+cd %cdd%
+call :c 0a "Enabling Notifications . . ."
+schtasks /Create /TN ITCMD-CHAT-NOTIF /SC ONLOGON /tr "%cd%\Notif\Notif.vbs" /F >nul
+timeout /t 2 >nul
+goto topreset
 
 :ban
 Title Ban      CB Chattio
@@ -3298,6 +3373,11 @@ if %cho% GTR %totalnum% goto viewF
 if not exist C:\users\Public\chat\LocalFiles\ md C:\users\Public\chat\LocalFiles\
 if not exist "\\%him%\chat\Files\!file%cho%!" call :c 0c "ERROR 404" & goto viewF
 copy /Y "\\%him%\chat\Files\!file%cho%!" "C:\users\Public\chat\LocalFiles\" >nul
+if %alwaysScan%==True call :scan "C:\user\Public\chat\LocalFiles\!file%cho%!" & goto opn
+call :c 0a "Would You like to scan this file with Windows Defender?"
+choice 
+if %errorlevel%==1 call :scan "C:\users\Public\chat\LocalFiles\!file%cho%!"
+:opn
 call :c 0a "Opening File . . ."
 timeout /t 2 >nul
 explorer /select,"C:\users\Public\chat\LocalFiles\!file%cho%!"
@@ -3306,9 +3386,36 @@ pause
 cls
 goto type
 
-
-
-
+:scan
+if not exist "%~1" call :c 0c "File not found: `%~1` & exit /b
+call :c 08 "Downloading File . . ."
+call :c 07 "Scanning . . ."
+if not exist "%programFiles%\Windows Defender\MpCmdRun.exe" call :c 0c "Windows Defender Not Installed." & exit /b
+call :c 08 "Note that your pc may detect it automatically and delete it before this program can remove it."
+"%programFiles%\Windows Defender\MpCmdRun" -Scan -ScanType 3 -File "%~1" >nul
+if %errorlevel%==0 call :c 0a "No Threats Found" & exit /b
+call :c 0c "Either a Threat was found or an error occured."
+call :c 08 "Testing if the file was removed."
+if not exist "%~1" call :c 0a  "The File was Removed from your PC Successfuly." & exit /b
+call :c 0c "The File Was Not Removed. Removing it manually..."
+call :c 08 "Del /f /q '%~1'"
+del /f /q "%~1"
+if not exist "%~1" call :c 0a  "The File was Removed from your PC Successfuly." & exit /b
+call :c c0 "ALERT!  The file could not be removed!"
+call :c 0c "Starting a system Wide Scan . . ."
+call :c 08 "Please Accept Admin Prompt to scan"
+echo %cd%>C:\users\Public\CDC.txt
+powershell start -verb runas '%0' antiviral "%~1" & exit
+:antiviral
+set /p cdd=<C:\users\Public\CDC.txt
+cd %cdd%
+call :c 0c "Scanning Individual File First"
+"%programFiles%\Windows Defender\MpCmdRun" -Scan -ScanType 3 -File "%~2"
+if not %errorlevel%==0 call :c 0c "Failure."
+call :c 0c "Starting Full System Scan . . ."
+"%ProgramFiles%\Windows Defender\MpCmdRun.exe" -Scan -ScanType 2
+pause
+exit
 
 :help
 cls
@@ -3513,6 +3620,52 @@ if %errorlevel%==4 goto talkoff
 if $errorlevel%==5 goto fileoff
 goto wait67
 
+
+
+
+:update
+cls
+call :c 0a "Checking for update . . ."
+bitsadmin /transfer myDownloadJob /download /priority High https://raw.githubusercontent.com/ITCMD/chat-batch/master/version "%cd%\versionDownload.txt" >nul
+find "%version%" "versionDownload.txt" >nul
+if %errorlevel%==0 call :c 0a "You are up to date." & pause & cls & goto type
+call :c 0f "An Update is available. Downloading . ."
+bitsadmin /transfer myDownloadJob /download /priority High https://raw.githubusercontent.com/ITCMD/chat-batch/master/chat.bat "%cd%\chatUPDATE.txt" >nul
+
+echo @echo off >update.bat
+(echo title Update Installer . . .
+echo color 0a
+echo echo Installing Update . . .
+echo if not exist chatUPDATE.txt goto error
+echo copy /b/v/y "chatUPDATE.txt" "%~nx0" ^>nul
+echo start "" "%~nx0" updated
+echo exit)>>update.bat
+
+
+:cleanupdate
+cls
+call :c 0a "Update Installed . . ."
+del /f /q "chatUPDATE.txt"
+del /d /q "update.bat"
+echo changelog:
+echo Added Notification Feature
+echo Fixed Skype Errors
+echo Added File Manager Antivirus
+pause
+goto topreset
+
+
+
+
+
+
+
+
+
+
+
+
+
 :fileoff
 cls
 echo Drag and drop file to be uploaded
@@ -3554,13 +3707,15 @@ goto type
 echo We do not have your skype name on file.
 echo Please Enter your Skype Name or Number.
 set /p skype=">"
+if /i "%skype%"=="-C" set skype=& cls & goto type
+echo set skype=%skype% >>Settings.cmd
 :CallSkype
 Title CB Chattio by Lucas Elliott   SKYPE     ========== ENTER -C TO CANCEL ============
 if "%skype%"=="" goto setskype
 :bss
 echo What User would you like to skype to?
 set /p skyper=">"
-if /i "%skyper%"=="-C" goto type
+if /i "%skyper%"=="-C" cls & goto type
 if /i "%skyper%"=="%me%" echo You Cannot Skype yourself & pause & goto Menu
 echo %skype%> "\\%him%\Chat\%skyper%Skype.txt"
 echo [S]%TIME: =0%-SERVER} Skype Message from %me% to %skyper% >>\\%him%\chat\CHAT.txt
