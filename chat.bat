@@ -1,6 +1,6 @@
 @echo off
 if exist dir.txt cd ..
-set version=[10.28.2]
+set version=[10.28.3]
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
@@ -3641,8 +3641,8 @@ cls
 call :c 0a "Checking for update . . ."
 bitsadmin /transfer myDownloadJob /download /priority High https://raw.githubusercontent.com/ITCMD/chat-batch/master/version "%cd%\versionDownload.txt" >nul
 find "%version%" "versionDownload.txt" >nul
-if %errorlevel%==0 call :c 0a "You are up to date." & pause & cls & goto type
-call :c 0f "An Update is available. Downloading . ."
+if %errorlevel%==0 call :c a0 "You are up to date." & pause & cls & goto type
+call :c 0f "An Update is available. Downloading . . ."
 bitsadmin /transfer myDownloadJob /download /priority High https://raw.githubusercontent.com/ITCMD/chat-batch/master/chat.bat "%cd%\chatUPDATE.txt" >nul
 echo @echo off >update.bat
 (echo title Update Installer . . .
@@ -3651,6 +3651,7 @@ echo echo Installing Update . . .
 echo if not exist chatUPDATE.txt echo ERROR ^&pause ^&exit /b
 echo copy /b/v/y "chatUPDATE.txt" "%~nx0" ^>nul
 echo start "" "%~nx0" updated
+echo timeout /t 2 >nul
 echo exit)>>update.bat
 start "" "update.bat"
 exit 
@@ -3659,9 +3660,13 @@ exit
 :cleanupdate
 cls
 call :c a0 "Update Installed."
+call :c 08 "Cleaning up . . ."
 del /f /q "chatUPDATE.txt"
 del /f /q "update.bat"
-echo changelog:
+timeout /t 2 >nul
+call :c 08 "Cleanup complete."
+echo.
+call :c f0 "changelog:"
 echo Added Notification Feature
 echo Fixed Skype Errors
 echo Added File Manager Antivirus
