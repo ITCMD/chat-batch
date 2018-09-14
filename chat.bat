@@ -2653,14 +2653,14 @@ goto type
 
 copy /Y "\\%him%\CHAT\chat.txt" "C:\users\Public\chat\Localchat.txt" >nul
 :wait
-Title CB Chattio by Lucas Elliott     T-Talk   U-Upload   F-View Files   O-Options   M-Mini Chatter   C-Clear   S-Skype Call   X-Exit
+Title CB Chattio by Lucas Elliott     T-Talk   U-Update   F-File Manager   O-Options   M-Mini Chatter   C-Clear   S-Skype Call   X-Exit
 choice /c "QTUFOMCSX" /n /d "Q" /t "10" >nul
 if not exist \\%him%\CHAT\chat.txt goto connectioner
 if %errorlevel%==1 goto refresh
 if %errorlevel%==7 cls & call :c 08 "Cleared at %time%" & goto wait
 if %errorlevel%==2 goto talk
-if %errorlevel%==3 goto upload
-if %errorlevel%==4 goto viewf
+if %errorlevel%==3 goto update
+if %errorlevel%==4 goto FileMan
 if %errorlevel%==5 goto setting
 if %errorlevel%==6 goto mini
 if %errorlevel%==8 goto CallSkype
@@ -2673,6 +2673,19 @@ call :c 0c "The Following Resource Was Not Found on the Server: %1"
 pause
 if %404%==Force exit /b
 exit
+
+
+:FileMan
+cls
+call :c a0 "File Manager Version 1.9"
+call :c 0a "1] View Files"
+call :c 0a "2] Upload Files"
+call :c 02 "3] Exit"
+choice /c 123
+if %errorlevel%==1 goto viewf
+if %errorlevel%==2 goto upload
+cls
+goto type
 
 
 :connectioner
