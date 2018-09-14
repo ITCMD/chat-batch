@@ -1,6 +1,6 @@
 @echo off
 if exist dir.txt cd ..
-set version=[10.28.5]
+set version=[10.28.6]
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
@@ -76,6 +76,8 @@ if not exist \\%him%\CHAT\ goto offline
 if not exist \\%him%\chat\Local.cmd call :404 "Local.cmd"
 if not exist \\%him%\chat\Users.log call :404 "Users.Log"
 set cls=False
+call :c 08 "Running ITCMDCOS version %version%   http://www.itcommand.tech"
+echo.
 call "\\%him%\chat\Local.cmd"
 for /f %%a in ('hostname') do (set hostname=%%a)
 find "[%me%]-[%hostname%]" "\\%him%\chat\Users.log" >nul
