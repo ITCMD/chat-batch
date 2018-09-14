@@ -1,6 +1,7 @@
 @echo off
 if exist dir.txt cd ..
 set version=[10.28.3]
+call :c 08 "Running ITCMDCOS version %version%   http://www.itcommand.tech"
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
