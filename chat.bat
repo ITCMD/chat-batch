@@ -3644,22 +3644,23 @@ find "%version%" "versionDownload.txt" >nul
 if %errorlevel%==0 call :c 0a "You are up to date." & pause & cls & goto type
 call :c 0f "An Update is available. Downloading . ."
 bitsadmin /transfer myDownloadJob /download /priority High https://raw.githubusercontent.com/ITCMD/chat-batch/master/chat.bat "%cd%\chatUPDATE.txt" >nul
-
 echo @echo off >update.bat
 (echo title Update Installer . . .
 echo color 0a
 echo echo Installing Update . . .
-echo if not exist chatUPDATE.txt goto error
+echo if not exist chatUPDATE.txt echo ERROR ^&pause ^&exit /b
 echo copy /b/v/y "chatUPDATE.txt" "%~nx0" ^>nul
 echo start "" "%~nx0" updated
 echo exit)>>update.bat
+start "" "update.bat"
+exit 
 
 
 :cleanupdate
 cls
-call :c 0a "Update Installed . . ."
+call :c a0 "Update Installed."
 del /f /q "chatUPDATE.txt"
-del /d /q "update.bat"
+del /f /q "update.bat"
 echo changelog:
 echo Added Notification Feature
 echo Fixed Skype Errors
