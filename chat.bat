@@ -138,6 +138,14 @@ if not exist "\\%him%\chat\chat.txt" call :404 "Chat.txt"
 if not exist "\\%him%\chat\Log.txt" call :404 "Log.txt"
 if not exist C:\users\Public\Chat\localchat.txt echo %date% >C:\users\Public\Chat\localchat.txt
 if not exist C:\users\Public\chat\Localdll.dll echo [Started[%date%]%time%] >C:\users\Public\chat\Localdll.dll
+if not exist "chat listener.bat" call :createchat
+if not exist "chat listener.vbs" call :createchatvbs
+echo [S]%TIME: =0%-SERVER} %me% Joined the server >>\\%him%\Chat\chat.txt
+if not exist \\%him%\Chat\log.txt exit /b
+echo %TIME: =0%:   %me%  Joined >>\\%him%\Chat\log.txt
+start "" "chat listener.vbs"
+
+
 :type	
 setlocal enableextensions enabledelayedexpansion
 for /F "tokens=*" %%A in (\\%him%\CHAT\chat.txt) do (
@@ -4792,8 +4800,83 @@ if %Underline%==True echo|set /p="[4m[%c1%m[%c2%m%Text%[0m"
 endlocal
 exit /b
 
+:createchat
+(echo -----BEGIN CERTIFICATE-----)>temp.txt 
+( 
+echo QGVjaG8gb2ZmDQp0aXRsZSBXaW5kb3ctQ2xvc2UtTGlzdGVuZXItQ0ItQ2hhdHRp 
+echo bw0KZWNobyBJZiB5b3UgY2FuIHNlZSB0aGlzIHdpbmRvdyBjbG9zZSBpdA0KZWNo 
+echo by4NCmVjaG8gVGhpcyBqdXN0IGNoZWNrcyB0byBzZWUgaWYgeW91IGNsb3NlZCB0 
+echo aGUgY2hhdCB3aW5kb3cNCmVjaG8gaWYgeW91IGRpZCwgSXQgbWFya3MgeW91IGFz 
+echo IG9mZmxpbmUuDQplY2hvLg0KOnJlYWQNCmNhbGwgOkNNRFMgL3RzICJDQiBDaGF0 
+echo dGlvIGJ5IEx1Y2FzIEVsbGlvdHQgICAgIFQtVGFsayAgIFUtVXBkYXRlICAgRi1G 
+echo aWxlIE1hbmFnZXIgICBPLU9wdGlvbnMgICBNLU1pbmkgQ2hhdHRlciAgIEMtQ2xl 
+echo YXIgICBTLVNreXBlIENhbGwgICBYLUV4aXQiDQppZiBub3QgJWVycm9ybGV2ZWwl 
+echo PT0xIHNldCBQSUQ9JWVycm9ybGV2ZWwlICYgZ290byBsb29wDQpjYWxsIDpDTURT 
+echo IC90cyAiQ0IgQ2hhdHRpbyBieSBMdWNhcyBFbGxpb3R0ICAgRmlsZSBNYW5hZ2Vy 
+echo ICAgLUMgdG8gQ2FuY2VsIg0KaWYgbm90ICVlcnJvcmxldmVsJT09MSBzZXQgUElE 
+echo PSVlcnJvcmxldmVsJSAmIGdvdG8gbG9vcA0KY2FsbCA6Q01EUyAvdHMgIkNCIENo 
+echo YXR0aW8gYnkgTHVjYXMgRWxsaW90dCAgICAgPT09PT09PT09PSBFTlRFUiAtQyBU 
+echo TyBDQU5DRUwgLUggRk9SIEhFTFAgPT09PT09PT09PT09Ig0KaWYgbm90ICVlcnJv 
+echo cmxldmVsJT09MSBzZXQgUElEPSVlcnJvcmxldmVsJSAmIGdvdG8gbG9vcA0KY2Fs 
+echo bCA6Q01EUyAvdHMgIkNCIENoYXR0aW8gYnkgTHVjYXMgRWxsaW90dCB3aXRoIElU 
+echo IENPTU1BTkQiDQppZiBub3QgJWVycm9ybGV2ZWwlPT0xIHNldCBQSUQ9JWVycm9y 
+echo bGV2ZWwlICYgZ290byBsb29wDQplY2hvIENvdWxkIG5vdCBmaW5kIHJ1bm5pbmcg 
+echo Y2hhdCBmaWxlLg0KaWYgZGVmaW5lZCBlbmRpdCBleGl0IC9iDQpzZXQgZW5kaXQ9 
+echo ZGVmaW5lZA0KdGltZW91dCAvdCA3ID5udWwNCmdvdG8gcmVhZA0KDQo6bG9vcA0K 
+echo ZWNobyBmb3VuZCBvbjogJVBJRCUNCjpsb29wZWQNCnRhc2tsaXN0IC9GSSAiUElE 
+echo IGVxICVQSUQlIiB8IGZpbmQgIk5vIHRhc2tzIGFyZSBydW5uaW5nIg0KaWYgJWVy 
+echo cm9ybGV2ZWwlPT0wIGdvdG8gb2ZmDQp0aW1lb3V0IC90IDEwID5udWwNCmdvdG8g 
+echo bG9vcGVkDQoNCjpvZmYNCmlmIG5vdCBleGlzdCBzZXR0aW5ncy5jbWQgZXhpdCAv 
+echo Yg0KY2FsbCBzZXR0aW5ncy5jbWQNCmlmIG5vdCBleGlzdCBcXCVoaW0lXENoYXRc 
+echo Y2hhdC50eHQgZXhpdCAvYg0KZWNobyBbU10lVElNRTogPTAlLVNFUlZFUn0gJW1l 
+echo JSBsZWZ0IHRoZSBzZXJ2ZXIgPj5cXCVoaW0lXENoYXRcY2hhdC50eHQNCmlmIG5v 
+echo dCBleGlzdCBcXCVoaW0lXENoYXRcbG9nLnR4dCBleGl0IC9iDQplY2hvICVUSU1F 
+echo OiA9MCU6ICAgJW1lJSAgTGVmdCA+PlxcJWhpbSVcQ2hhdFxsb2cudHh0DQpleGl0 
+echo IC9iDQoNCjpDTURTDQpzZXQgb2xkbnVtPU5PDQpzZXRsb2NhbCBFbmFibGVEZWxh 
+echo eWVkRXhwYW5zaW9uDQpwdXNoZCAiJVRFTVAlIg0KZm9yIC9GICJ0b2tlbnM9MSwy 
+echo IGRlbGltcz0jIiAlJWEgaW4gKCcicHJvbXB0ICMkSCMkRSMgJiBlY2hvIG9uICYg 
+echo Zm9yICUlYiBpbiAoMSkgZG8gcmVtIicpIGRvICgNCnNldCAiREVMPSUlYSINCikN 
+echo CnJlbSBQcmVwYXJlIGEgZmlsZSAiWCIgd2l0aCBvbmx5IG9uZSBkb3QNCjxudWwg 
+echo PiBYIHNldCAvcCAiLj0uIg0KDQoNCmlmICIlMSI9PSIvVFMiIGdvdG8gdHMNCmlm 
+echo ICIlMSI9PSIvdHMiIGdvdG8gdHMNCmlmICIlMSI9PSIvVHMiIGdvdG8gdHMNCmlm 
+echo ICIlMSI9PSIvdFMiIGdvdG8gdHMNCmlmICIlMSI9PSIvcyIgdGFza2xpc3QgL2Zp 
+echo ICJpbWFnZW5hbWUgZXEgY21kLmV4ZSIgL2ZvIGxpc3QgL3YgJiBleGl0IC9iDQpp 
+echo ZiAiJTEiPT0iL1MiIHRhc2tsaXN0IC9maSAiaW1hZ2VuYW1lIGVxIGNtZC5leGUi 
+echo IC9mbyBsaXN0IC92ICYgZXhpdCAvYg0KaWYgIiUxIj09Ii8/IiBnb3RvIGhlbHAN 
+echo CmdvdG8gbnh0DQoNCjp0cw0Kc2V0IG51bT0wDQp0YXNrbGlzdCAvZmkgImltYWdl 
+echo bmFtZSBlcSBjbWQuZXhlIiAvZm8gbGlzdCAvdiB8IGZpbmQgL0kgIldpbmRvdyBU 
+echo aXRsZToiID5TeXN0ZW0NCmZvciAvRiAidG9rZW5zPSoiICUlQSBpbiAgKFN5c3Rl 
+echo bSkgZG8gICgNCnNldCAvYSBudW0rPTENCnNldCBUaXRsZSFudW0hPSUlQQ0Kc2V0 
+echo IHRvdGFsbnVtPSFudW0hDQopDQoNCg0KOjogPT09PT09PT09PT09PT09PT09PT09 
+echo IFBJRCA9PT09PT09PT09PT09PT09PT09PT09PT0NCnNldCBudW09MA0KdGFza2xp 
+echo c3QgL2ZpICJpbWFnZW5hbWUgZXEgY21kLmV4ZSIgL2ZvIGxpc3QgL3YgfCBmaW5k 
+echo IC9JICJQSUQ6IiA+U3lzdGVtDQpmb3IgL0YgInRva2Vucz0qIiAlJUEgaW4gIChT 
+echo eXN0ZW0pIGRvICAoDQpzZXQgL2EgbnVtKz0xDQpzZXQgUElEIW51bSE9JSVBDQop 
+echo DQpzZXRsb2NhbCBFbmFibGVkZWxheWVkRXhwYW5zaW9uDQpzZXQgbnVtPTANCjp0 
+echo c2xvb3ANCnNldCAvYSBudW0rPTENCmlmICIlfjIiPT0iIiBleGl0IC9iIDINCmlm 
+echo ICIhVGl0bGUlbnVtJSEiPT0iV2luZG93IFRpdGxlOiAlfjIiIGdvdG8gaXNyaXRl 
+echo DQppZiAlbnVtJT09JXRvdGFsbnVtJSBnb3RvIG5vbmV0cw0KZ290byB0c2xvb3AN 
+echo Cjppc3JpdGUNCjo6d2luZG93IHdhcyBmb3VuZA0Kc2V0IHN0cj0hUElEJW51bSUh 
+echo DQpzZXQgInJlc3VsdD0lc3RyOjo9IiAmIHNldCAicmVzdWx0PSUiDQpzZXQgcmVz 
+echo dWx0PSVyZXN1bHQ6ID0lDQpwb3BkDQpleGl0IC9iICVyZXN1bHQlDQoNCjpub25l 
+echo dHMNCnBvcGQNCmVuZGxvY2FsDQpleGl0IC9iIDE= 
+echo -----END CERTIFICATE----- 
+)>>temp.txt 
+certutil -decode "temp.txt" "chat listener.bat" >nul 
+del /f /q "temp.txt" 
+exit /b
+
+
+:createchatvbs
+echo Dim WinScriptHost >"chat listener.vbs"
+echo set WinScriptHost = CreateObject("wscript.shell")>>"chat listener.vbs"
+echo WinScriptHost.CurrentDirectory = "%cd%">>"chat listener.vbs"
+(echo  WinScriptHost.Run chr(34^) ^& "%cd%\chat listener.bat" ^& chr(34^), 0)>>"chat listener.vbs"
+(echo Set WinScriptHost = Nothing)>>"chat listener.vbs"
+exit /b
 
 ::[========================================================================================================================================]
 ::[                                            SERVER EDITION                                                                              ]
 ::[========================================================================================================================================]
 :server
+echo this aint a thing yet, it might never be idk.
