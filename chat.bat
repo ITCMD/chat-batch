@@ -1,6 +1,6 @@
 @echo off
 if exist dir.txt cd ..
-set version=[10.28.7]
+set version=[10.28.8]
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
@@ -3672,16 +3672,19 @@ exit
 cls
 call :c a0 "Update Installed."
 call :c 08 "Cleaning up . . ."
+timeout /t 3 >nul
 del /f /q "chatUPDATE.txt"
 del /f /q "update.bat"
 del /f /q "versionDownload.txt"
-timeout /t 2 >nul
 call :c 08 "Cleanup complete."
 echo.
 call :c f0 "changelog:"
 echo Added Notification Feature
 echo Fixed Skype Errors
 echo Added File Manager Antivirus
+echo Added User Join/Leave Messages
+echo Increased stability with Find command
+echo Looked at improving some stuff, but didn't
 pause
 goto topreset
 
