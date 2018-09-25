@@ -3467,10 +3467,7 @@ set /p msg="%me% Message> "
 if /i "%msg%"=="-C" goto wait
 if /i "%msg%"=="-H" goto help
 if not exist \\%him%\CHAT\ChatDate.txt echo [D]%date% >> \\%him%\CHAT\Chat.txt & echo %date:~7,2%>\\%him%\CHAT\ChatDate.txt
-echo here
 set /p dte=<\\%him%\CHAT\ChatDate.txt
-echo here
-pause
 if not %dte%==%date:~7,2% echo [D]%date% >> \\%him%\CHAT\Chat.txt & echo %date:~7,2%>\\%him%\CHAT\ChatDate.txt
 echo %TIME: =0%-%me%} !msg! >> \\%him%\CHAT\Chat.txt
 echo %TIME: =0%-%me%} !msg! >> \\%him%\CHAT\LOG.txt
