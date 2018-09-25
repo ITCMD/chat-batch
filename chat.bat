@@ -1,6 +1,6 @@
 @echo off
 if exist dir.txt cd ..
-set version=[10.28.9]
+set version=[10.29.0]
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
@@ -157,7 +157,7 @@ for /F "tokens=*" %%A in (\\%him%\CHAT\chat.txt) do (
 	if "!line!" neq "!line:[U]=!" set line=%TextColor% "!line:[U]=!" /u
 	if "!line!" neq "!line:[D]=!" set line=08 "!line:[D]=!"
     call :c !line!
-	if !num!==25 goto clear20
+	if !num!==31 goto clear20
 )
 Endlocal
 copy /Y "\\%him%\CHAT\Chat.txt" "C:\Users\Public\chat\Localchat.txt" >nul
@@ -3466,9 +3466,12 @@ setlocal EnableDelayedExpansion
 set /p msg="%me% Message> "
 if /i "%msg%"=="-C" goto wait
 if /i "%msg%"=="-H" goto help
-if not exist \\%him%\CHAT\ChatDate.DLL echo [D]%date% >> \\%him%\CHAT\Chat.txt & echo %date:~7,2%>\\%him%\CHAT\ChatDate.DLL
-set /p dte=<\\%him%\CHAT\ChatDate.DLL
-if not %dte%==%date:~7,2% echo [D]%date% >> \\%him%\CHAT\Chat.txt & echo %date:~7,2%>\\%him%\CHAT\ChatDate.DLL
+if not exist \\%him%\CHAT\ChatDate.txt echo [D]%date% >> \\%him%\CHAT\Chat.txt & echo %date:~7,2%>\\%him%\CHAT\ChatDate.txt
+echo here
+set /p dte=<\\%him%\CHAT\ChatDate.txt
+echo here
+pause
+if not %dte%==%date:~7,2% echo [D]%date% >> \\%him%\CHAT\Chat.txt & echo %date:~7,2%>\\%him%\CHAT\ChatDate.txt
 echo %TIME: =0%-%me%} !msg! >> \\%him%\CHAT\Chat.txt
 echo %TIME: =0%-%me%} !msg! >> \\%him%\CHAT\LOG.txt
 goto refresh
