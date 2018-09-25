@@ -3680,10 +3680,9 @@ call :c 08 "Cleanup complete."
 echo.
 call :c f0 "changelog:"
 echo Added Notification Feature
-echo Fixed Skype Errors
-echo Added File Manager Antivirus
-echo Added User Join/Leave Messages
-echo Increased stability with Find command
+echo fixed Notif.vbs not being created.
+echo Improved leave/join messages.
+echo Researched REG errors.
 echo Looked at improving some stuff, but didn't
 pause
 goto topreset
