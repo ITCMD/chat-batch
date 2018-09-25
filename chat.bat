@@ -1,6 +1,6 @@
 @echo off
 if exist dir.txt cd ..
-set version=[10.29.0]
+set version=[10.29.1]
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
@@ -38,7 +38,7 @@ if not exist Notif\ md Notif\
 copy "\\%him%\CHAT\Notif\Notif.bat" "Notif\Notif.bat" >nul
 copy "settings.cmd" "Notif\settings.cmd" >nul
 (echo %~0)> "Notif\dir.txt
-if not exist Notif\Notif.vbs goto skipnotif
+if exist Notif\Notif.vbs goto skipnotif
 echo Dim WinScriptHost >"Notif\Notif.vbs"
 echo set WinScriptHost = CreateObject("wscript.shell")>>"Notif\Notif.vbs"
 echo WinScriptHost.CurrentDirectory = "%cd%\Notif">>"Notif\Notif.vbs"
