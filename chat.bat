@@ -253,6 +253,12 @@ reg add HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0 /v NtlmMi
 call :c 0a "Dissabling pasword protection for folder . . ."
 reg add Computer\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa /v everyoneincludesanonymous /t REG_DWORD /d 1 /f
 reg add Computer\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters /v restrictnullsessaccess /t REG_DWORD /d 0 /f
+if %errorlevel%==1 (
+	call :c 0a "Error was expected and is being Handled. Stand By . . ."
+	reg add HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa /v everyoneincludesanonymous /t REG_DWORD /d 1 /f
+	reg add HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters /v restrictnullsessaccess /t REG_DWORD /d 0 /f
+	call :c 0a "Error Handled and fixed."
+)
 call :c 0a "Creating Folder . . ."
 if %cusf%==n set fold="C:\users\%username%\CHAT"
 if %cusf%==n if not exist %Fold% md %fold%
@@ -3651,10 +3657,13 @@ goto wait67
 :update
 cls
 call :c 0a "Checking for update . . ."
+call :c 08 "This Version: %version%"
 bitsadmin /transfer myDownloadJob /download /priority High https://raw.githubusercontent.com/ITCMD/chat-batch/master/version "%cd%\versionDownload.txt" >nul
 find "%version%" "versionDownload.txt" >nul
 if %errorlevel%==0 call :c a0 "You are up to date." & pause & cls & goto type
-call :c 0f "An Update is available. Downloading . . ."
+set /p nv=<"versionDownload.txt"
+call :c 0f "An Update is available: %nv%"
+call :c 0f "Downloading . . ."
 bitsadmin /transfer myDownloadJob /download /priority High https://raw.githubusercontent.com/ITCMD/chat-batch/master/chat.bat "%cd%\chatUPDATE.txt" >nul
 echo @echo off >update.bat
 (echo title Update Installer . . .
@@ -3682,7 +3691,8 @@ echo.
 call :c f0 "changelog:"
 echo Fixed chat pause bug.
 echo Fixed it not even sort of working at all (sorry about that one).
-echo Researched REG errors.
+echo Fixed REG errors.
+echo Added update numbers
 echo Fixed Access is denied message.
 echo Looked at improving some stuff, did a little but not all of it.
 echo Removed Herobrine.
