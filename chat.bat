@@ -1,6 +1,6 @@
 @echo off
 if exist dir.txt cd ..
-set version=[10.29.1]
+set version=[10.29.2]
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
@@ -284,6 +284,7 @@ for /f "delims=[] tokens=2" %%a in ('ping -4 -n 1 %ComputerName% ^| findstr [') 
 call :c 0a "Sharing Folder..."
 net share CHAT=%fold% /GRANT:Everyone,FULL
 Icacls %fold% /grant Everyone:F /inheritance:e /T
+icacls %fold% /grant Everyone:(OI)(CI)F
 Icacls "%fold2%\Settings.txt" /grant Everyone:(RX)
 Icacls "%fold2%\Mini.bat" /grant Everyone:(RX)
 Icacls "%fold2%\Local.cmd" /grant Everyone:(RX)
@@ -3679,11 +3680,12 @@ del /f /q "versionDownload.txt"
 call :c 08 "Cleanup complete."
 echo.
 call :c f0 "changelog:"
-echo Added Notification Feature
-echo fixed Notif.vbs not being created.
-echo Improved leave/join messages.
+echo Fixed chat pause bug.
+echo Fixed it not even sort of working at all (sorry about that one).
 echo Researched REG errors.
-echo Looked at improving some stuff, but didn't
+echo Fixed Access is denied message.
+echo Looked at improving some stuff, did a little but not all of it.
+echo Removed Herobrine.
 pause
 goto topreset
 
