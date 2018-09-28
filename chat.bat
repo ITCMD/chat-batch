@@ -221,7 +221,7 @@ cls
 call :c 0a "Checking for update . . ."
 bitsadmin /transfer myDownloadJob /download /priority High https://raw.githubusercontent.com/ITCMD/chat-batch/master/version "%cd%\versionDownload.txt" >nul
 find "%version%" "versionDownload.txt" >nul
-if %errorlevel%==0 call :c a0 "You are up to date." & timeout /t 1 >nul & cls & backfindserver
+if %errorlevel%==0 call :c a0 "You are up to date." & timeout /t 1 >nul & cls & goto backfindserver
 call :c 0f "An Update is available. Downloading . . ."
 bitsadmin /transfer myDownloadJob /download /priority High https://raw.githubusercontent.com/ITCMD/chat-batch/master/chat.bat "%cd%\chatUPDATE.txt" >nul
 echo @echo off >update.bat
