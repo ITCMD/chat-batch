@@ -5,6 +5,7 @@ set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
 if "%~1"=="updated" goto cleanupdate
+if "%~1"=="updatedf" goto cleanupdatef
 if "%~1"=="notif0" goto Dissable0
 if "%~1"=="antivirual" goto antiviral
 if "%~1"=="Notif" goto notifadmin
@@ -213,7 +214,45 @@ pause
 call :c 0a "Thank you! The program will now relaunch."
 start "" "%~0"
 exit
+
 :findserver
+
+cls
+call :c 0a "Checking for update . . ."
+bitsadmin /transfer myDownloadJob /download /priority High https://raw.githubusercontent.com/ITCMD/chat-batch/master/version "%cd%\versionDownload.txt" >nul
+find "%version%" "versionDownload.txt" >nul
+if %errorlevel%==0 call :c a0 "You are up to date." & timeout /t 1 >nul & cls & backfindserver
+call :c 0f "An Update is available. Downloading . . ."
+bitsadmin /transfer myDownloadJob /download /priority High https://raw.githubusercontent.com/ITCMD/chat-batch/master/chat.bat "%cd%\chatUPDATE.txt" >nul
+echo @echo off >update.bat
+(echo title Update Installer . . .
+echo color 0a
+echo echo Installing Update . . .
+echo if not exist chatUPDATE.txt echo ERROR ^&pause ^&exit /b
+echo copy /b/v/y "chatUPDATE.txt" "%~nx0" ^>nul
+echo start "" "%~nx0" updatedf
+echo timeout /t 2 ^>nul
+echo exit)>>update.bat
+start "" "update.bat"
+exit 
+
+
+:cleanupdatef
+cls
+call :c a0 "Update Installed."
+call :c 08 "Cleaning up . . ."
+timeout /t 3 >nul
+del /f /q "chatUPDATE.txt"
+del /f /q "update.bat"
+del /f /q "versionDownload.txt"
+call :c 08 "Cleanup complete."
+echo.
+goto topreset
+
+:backfindserver
+
+
+
 set cdd=<C:\users\Public\CDC.txt
 cd %cdd%
 for /f "tokens=2*" %%a in ('reg query \\%computername%\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0 /v NtlmMinClientSec') do set "regrez=%%b"
