@@ -1,6 +1,6 @@
 @echo off
 if exist dir.txt cd ..
-set version=[10.29.3]
+set version=[10.29.4]
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
@@ -35,6 +35,10 @@ set alwaysScan=False
 set debug=No
 call settings.cmd
 color %color%
+if %debug%==Yes set >set.txt
+if not exist \\%him%\CHAT\ goto offline
+if not exist \\%him%\chat\Local.cmd call :404 "Local.cmd"
+if not exist \\%him%\chat\Users.log call :404 "Users.Log"
 if not exist \\%him%\chat\Notif\Notif.bat call :404 "Notif.bat"
 if not exist Notif\ md Notif\
 copy "\\%him%\CHAT\Notif\Notif.bat" "Notif\Notif.bat" >nul
@@ -72,10 +76,6 @@ schtasks /Create /TN ITCMD-CHAT-NOTIF /SC ONLOGON /tr "%cd%\Notif\Notif.vbs" /F
 goto topreset
 :skipnotif2
 cls
-if %debug%==Yes set >set.txt
-if not exist \\%him%\CHAT\ goto offline
-if not exist \\%him%\chat\Local.cmd call :404 "Local.cmd"
-if not exist \\%him%\chat\Users.log call :404 "Users.Log"
 set cls=False
 call :c 08 "Running ITCMDCOS version %version%   http://www.itcommand.tech"
 echo.
