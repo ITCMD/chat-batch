@@ -1,6 +1,6 @@
 @echo off
 if exist dir.txt cd ..
-set version=[10.29.4]
+set version=[10.29.5]
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
@@ -3707,6 +3707,9 @@ set /p nv=<"versionDownload.txt"
 call :c 0f "An Update is available: %nv%"
 call :c 0f "Downloading . . ."
 bitsadmin /transfer myDownloadJob /download /priority High https://raw.githubusercontent.com/ITCMD/chat-batch/master/chat.bat "%cd%\chatUPDATE.txt" >nul
+call :c 08 "Checking Notification Updates . . ."
+bitsadmin /transfer myDownloadJob /download /priority High https://raw.githubusercontent.com/ITCMD/chat-batch/master/Notif.bat "%cd%\Notif\Notif.bat" >nul
+call :c 08 "Installing . . ."
 echo @echo off >update.bat
 (echo title Update Installer . . .
 echo color 0a
