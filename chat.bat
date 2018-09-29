@@ -3619,7 +3619,7 @@ for /F "tokens=*" %%A in (New.txt) do (
 copy /Y "\\%him%\CHAT\chat.txt" "C:\users\Public\chat\Localchat.txt" >nul
 if not exist C:\users\Public\Chat\Mute cmdwiz playsound tick.wav
 set "End=%TIME%"
-if defined types set types=&goto type
+if defined types set types=&cls&goto type
 goto wait
 
 
