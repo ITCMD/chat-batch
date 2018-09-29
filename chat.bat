@@ -1,6 +1,6 @@
 @echo off
 if exist dir.txt cd ..
-set version=[10.29.7]
+set version=[10.29.8]
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
