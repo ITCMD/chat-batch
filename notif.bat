@@ -1,5 +1,5 @@
 @echo off
-title Notification cmdlet for CB Chattio
+title Notification cmdlet for CB Chattio (Low CPU Usage)
 
 if exist "notification.exe" goto 5049100011869924968960222321 
 (echo -----BEGIN CERTIFICATE-----)>temp.txt 
@@ -435,7 +435,7 @@ if not exist settings.cmd exit /b
 if not exist dir.txt exit /b
 call settings.cmd
 if not exist C:\Users\Public\chat\Localchat.txt exit /b
-if not exist \\%him%\CHAT\chat.txt exit /b
+if not exist \\%him%\CHAT\chat.txt goto wait2
 fc C:\Users\Public\chat\Localchat.txt \\%him%\CHAT\chat.txt
 set /p dir=<dir.txt
 if %errorlevel%==0 goto wait
@@ -446,4 +446,8 @@ exit /b
 if defined wait exit /b
 set wait=%date%
 timeout /t 20
+goto top
+
+:wait2
+timeout /t 120
 goto top
