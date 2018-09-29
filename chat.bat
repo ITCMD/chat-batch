@@ -3529,7 +3529,7 @@ set /p msg="%me% Message> "
 if /i "%msg%"=="-C" goto wait
 if /i "%msg%"=="-H" goto help
 echo "%msg%"| find "[S]" >nul
-if %erorlevel%==0 call :c 0c "Are you the server? No? I didn't Think so." /u& pause &goto type
+if %errorlevel%==0 call :c 0c "Are you the server? No? I didn't Think so." /u& pause &goto type
 if not exist \\%him%\CHAT\ChatDate.txt echo [D]%date% >> \\%him%\CHAT\Chat.txt & echo %date:~7,2%>\\%him%\CHAT\ChatDate.txt
 set /p dte=<\\%him%\CHAT\ChatDate.txt
 if not %dte%==%date:~7,2% echo [D]%date% >> \\%him%\CHAT\Chat.txt & echo %date:~7,2%>\\%him%\CHAT\ChatDate.txt
