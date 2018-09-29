@@ -2746,7 +2746,7 @@ goto type
 
 
 :connectioner
-call :c 0c "There was a connection Error. Please wait while we try and identify the source of the problem"
+call :c 0c "There was a connection Error. Please wait while we try and identify the source of the problem . . ."
 if exist \\%him%\CHAT\Chat.txt call :c 0c "Wait. Never Mind, the problem is gone." & cls & goto refresh
 if exist \\%him%\CHAT\Log.txt echo %me COULD NOT FIND THE CHAT FILE at %time% >>\\%him%\CHAT\Log.txt & goto nochat
 ping %him% -n 1 >nul
