@@ -1,6 +1,6 @@
 @echo off
 if exist dir.txt cd ..
-set version=[10.29.9]
+set version=[10.30.0]
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
@@ -3612,7 +3612,7 @@ for /F "tokens=*" %%A in (New.txt) do (
     if "!line!" neq "!line:[S]=!" set line=%systemColor% "!line:[S]=!"
 	if "!line!" neq "!line:[U]=!" set line=%TextColor% "!line:[U]=!" /u
 	if "!line!" neq "!line:[D]=!" set line=08 "!line:[D]=!"
-	echo !line!|find "FULL CHAT CLEARED" >nul
+	echo !line!|find "Full Chat Cleared" >nul
 	if !errorlevel!==0 set types=True
     call :c !line!
 )
