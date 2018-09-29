@@ -3594,11 +3594,14 @@ for /F "tokens=*" %%A in (New.txt) do (
     if "!line!" neq "!line:[S]=!" set line=%systemColor% "!line:[S]=!"
 	if "!line!" neq "!line:[U]=!" set line=%TextColor% "!line:[U]=!" /u
 	if "!line!" neq "!line:[D]=!" set line=08 "!line:[D]=!"
+	echo !line!|find "FULL CHAT CLEARED" >nul
+	if !errorlevel!==0 set types=True
     call :c !line!
 )
 copy /Y "\\%him%\CHAT\chat.txt" "C:\users\Public\chat\Localchat.txt" >nul
 if not exist C:\users\Public\Chat\Mute cmdwiz playsound tick.wav
 set "End=%TIME%"
+if defined types set types=&goto type
 goto wait
 
 
