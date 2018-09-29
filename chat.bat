@@ -88,12 +88,16 @@ timeout /t 1 >nul
 if "%cls%"=="True" cls
 if not exist \\%him%\CHAT\Ban call :404 "Ban"
 for /f "delims=[] tokens=2" %%a in ('ping -4 -n 1 %ComputerName% ^| findstr [') do set NetworkIP=%%a
+for /f %%a in ('hostname') do (set hostname=%%a)
+find "[%hostname%]" "\\%him%\CHAT\Host.inf" >nul
+if %errorlevel%==0 goto skipbancheck
 find "[%NetworkIP%]" "\\%him%\CHAT\Ban" >nul
 if %errorlevel%==0 goto banned
 find "[%hostname%]" "\\%him%\CHAT\Ban" >nul
-if %errorlevel%==0 goto banned
+if %errorlevel%==0 goto banned2
 find "[%me%]" "\\%him%\CHAT\Ban" >nul
 if %errorlevel%==0 goto banned
+:skipbancheck
 if not exist \\%him%\chat\chat.txt call :404 "chat.txt"
 if exist LeftMessage.txt type LeftMessage.txt >>\\%him%\chat\chat.txt & echo ---%TIME: =0%----%me%-Left-Messages---->> \\%him%\CHAT\LOG.txt & type LeftMessage.txt >>\\%him%\chat\LOG.txt & echo ------END OF %me% LEFT MESSAGES---->> \\%him%\CHAT\LOG.txt & del /f /q LeftMessage.txt
 if not exist FilesOnConnect.txt goto nff
@@ -169,6 +173,15 @@ goto wait
 :banned
 cls
 call :c 0c "You have been banned from the server %him%"
+echo.
+find "[%NetworkIP%]" "\\%him%\CHAT\Ban"
+pause
+exit
+:banned2
+cls
+call :c 0c "You have been banned from the server %him%"
+echo.
+find "[%hostname%]" "\\%him%\CHAT\Ban"
 pause
 exit
 
@@ -2899,12 +2912,15 @@ call :c 0c "======================================================="
 call :c 0a "Enter Hostname to Ban" /n
 call :c 08 "   -C to cancel"
 set /p hst=">"
-if "%hst%"=="Hostname" goto top
+if /i "%hst%"=="%Hostname%" goto top
 if /i "%hst%"=="-C" goto ban2
 find "[%hst%]" "\\%him%\CHAT\Users.log" >nul
 if %errorlevel%==1 call :c 0c "Hostname Not Found." & pause & goto ban2
 echo Enter a reason for banning %hst%
+:looprez
 set /p reason=">"
+echo %reason%|findstr ") (" >nul
+if %errorlevel%==0 goto looprez
 (echo [%hst%] - %reason%)>>"\\%him%\CHAT\Ban"
 echo %TIME: =0%-SERVER} [S]%me% Banned %hst% for %reason% >> "\\%him%\CHAT\Chat.txt"
 echo %TIME: =0%-SERVER} %me% Banned %hst% for %reason% >> "\\%him%\CHAT\Log.txt"
@@ -2928,7 +2944,7 @@ call :c 0f " from the server?"
 choice
 if %errorlevel%==2 goto ban2
 call :c 0a "Unbanning . . ."
-findstr /V "[%hst%]" "\\%him%\CHAT\Ban" > outfile.txt
+findstr /L /V "[%hst%]" "\\%him%\CHAT\Ban" >outfile.txt
 del /f /q "\\%him%\CHAT\Ban"
 copy "outfile.txt" "\\%him%\CHAT\Ban" >nul
 del /f /q outfile.txt
@@ -3512,6 +3528,8 @@ setlocal EnableDelayedExpansion
 set /p msg="%me% Message> "
 if /i "%msg%"=="-C" goto wait
 if /i "%msg%"=="-H" goto help
+echo "%msg%"| find "[S]" >nul
+if %erorlevel%==0 call :c 0c "Are you the server? No? I didn't Think so." /u& pause &goto type
 if not exist \\%him%\CHAT\ChatDate.txt echo [D]%date% >> \\%him%\CHAT\Chat.txt & echo %date:~7,2%>\\%him%\CHAT\ChatDate.txt
 set /p dte=<\\%him%\CHAT\ChatDate.txt
 if not %dte%==%date:~7,2% echo [D]%date% >> \\%him%\CHAT\Chat.txt & echo %date:~7,2%>\\%him%\CHAT\ChatDate.txt
