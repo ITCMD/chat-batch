@@ -1,6 +1,6 @@
 @echo off
 if exist dir.txt cd ..
-set version=[10.30.0]
+set version=[10.30.1]
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
@@ -340,14 +340,19 @@ bitsadmin /transfer myDownloadJob /download /priority High  https://raw.githubus
 
 for /f "delims=[] tokens=2" %%a in ('ping -4 -n 1 %ComputerName% ^| findstr [') do set NetworkIP=%%a
 call :c 0a "Sharing Folder..."
-net share CHAT=%fold% /GRANT:Everyone,FULL
-Icacls %fold% /grant Everyone:F /inheritance:e /T
-icacls %fold% /grant Everyone:(OI)(CI)F
-Icacls "%fold2%\Settings.txt" /grant Everyone:(RX)
-Icacls "%fold2%\Mini.bat" /grant Everyone:(RX)
-Icacls "%fold2%\Local.cmd" /grant Everyone:(RX)
-Icacls "%fold2%\Ban" /grant Everyone:(RX)
-Icacls "%fold2%\Host.inf" /grant Everyone:(RX)
+net share CHAT=%fold% /GRANT:EVERYONE,FULL
+Icacls %fold% /grant EVERYONE:F /inheritance:e /T
+icacls %fold% /grant EVERYONE:(OI)(CI)F
+Icacls "%fold2%\Settings.txt" /deny EVERYONE:(W,D,M)
+Icacls "%fold2%\Mini.bat" /deny EVERYONE:(W,D,M)
+Icacls "%fold2%\Local.cmd" /deny EVERYONE:(W,D,M)
+Icacls "%fold2%\Ban" /deny EVERYONE:(W,D,M)
+Icacls "%fold2%\Host.inf" /deny EVERYONE:(W,D,M)
+cacls "%fold2%\Settings.txt" /E /G EVERYONE:R
+cacls "%fold2%\Mini.bat" /E /G EVERYONE:R
+cacls "%fold2%\Local.cmd" /E /G EVERYONE:R
+cacls "%fold2%\Ban" /E /G EVERYONE:R
+cacls "%fold2%\Host.inf" /E /G EVERYONE:R
 echo Completed.
 echo.
 echo Done
@@ -2812,7 +2817,7 @@ call :c 0f "2] Settings.CMD Variables"
 call :c 0f "3] Edit Settings.CMD"
 call :c 0f "4] Force Chat Clear"
 call :c 0f "5] View Log" 
-call :c 0f "6] Ban Users"
+call :c 0f "6] Ban Menu"
 schtasks /query /TN ITCMD-CHAT-NOTIF 2>nul| find "ITCMD-CHAT-NOTIF                         N/A                    Ready">nul 
 if %errorlevel%==0 call :c 0f "7] Dissable Notifications"
 if %errorlevel%==1 call :c 0f "7] Enable Notifications"
@@ -3619,7 +3624,7 @@ for /F "tokens=*" %%A in (New.txt) do (
 copy /Y "\\%him%\CHAT\chat.txt" "C:\users\Public\chat\Localchat.txt" >nul
 if not exist C:\users\Public\Chat\Mute cmdwiz playsound tick.wav
 set "End=%TIME%"
-if defined types set types=&cls&goto type
+if defined types set types=&goto type
 goto wait
 
 
@@ -3752,12 +3757,10 @@ del /f /q "versionDownload.txt"
 call :c 08 "Cleanup complete."
 echo.
 call :c f0 "changelog:"
-echo Fixed chat pause bug.
-echo Fixed it not even sort of working at all (sorry about that one).
-echo Fixed REG errors.
-echo Added update numbers
-echo Fixed Access is denied message.
-echo Looked at improving some stuff, did a little but not all of it.
+echo Fixed Security Issues with This thing called Cacls.
+echo Removed Server Messages from user arsenal
+echo Fixed Chat clear not clearing for other users
+echo Fixed Ban Feature
 echo Removed Herobrine.
 pause
 goto topreset
