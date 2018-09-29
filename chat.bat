@@ -22,7 +22,7 @@ if not exist tick.wav goto notick
 if %setup%==True goto setupss
 if not exist settings.cmd goto findserver
 ::Presets
-call :c 08 "Running ITCMDCOS version %version%   http://www.itcommand.tech"
+::call :c 08 "Running ITCMDCOS version %version%   http://www.itcommand.tech"
 set color=07
 set 404=Exit
 set BoldColor=0e
