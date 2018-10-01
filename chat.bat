@@ -338,9 +338,8 @@ for /f %%a in ('hostname') do (set hostname=%%a)
 echo [Hostname]-[Username] >"%fold2%\Users.log"
 md "%fold2%\chat batch file\"
 copy "%~0" "%fold2%\chat.bat"
-call :c 02 "Downloading Mini Chatter . . ."
+call :c 02 "Downloading Required Setting Files . . ."
 if not exist "%fold2%\Notif\" md "%fold2%\Notif"
-bitsadmin /transfer myDownloadJob /download /priority High  https://raw.githubusercontent.com/ITCMD/chat-batch/master/Mini.bat "%fold2%\Mini.bat" >nul
 bitsadmin /transfer myDownloadJob /download /priority High  https://raw.githubusercontent.com/ITCMD/chat-batch/master/DefaultSettings.txt "%fold2%\Settings.txt" >nul
 bitsadmin /transfer myDownloadJob /download /priority High  https://raw.githubusercontent.com/ITCMD/chat-batch/master/notif.bat "%fold2%\Notif\Notif.bat" >nul
 
@@ -350,7 +349,6 @@ net share CHAT=%fold% /GRANT:EVERYONE,FULL
 Icacls %fold% /grant EVERYONE:F /inheritance:e /T
 icacls %fold% /grant EVERYONE:(OI)(CI)F
 Icacls "%fold2%\Settings.txt" /deny EVERYONE:(W,D,M)
-Icacls "%fold2%\Mini.bat" /deny EVERYONE:(W,D,M)
 Icacls "%fold2%\Local.cmd" /deny EVERYONE:(W,D,M)
 Icacls "%fold2%\Ban" /deny EVERYONE:(W,D,M)
 Icacls "%fold2%\Host.inf" /deny EVERYONE:(W,D,M)
@@ -3796,10 +3794,8 @@ del /f /q "versionDownload.txt"
 call :c 08 "Cleanup complete."
 echo.
 call :c f0 "changelog:"
-echo Fixed Security Issues with This thing called Cacls.
-echo Removed Server Messages from user arsenal
-echo Fixed Chat clear not clearing for other users
-echo Fixed Ban Feature
+echo Fixed Mini Chatter
+echo Built Mini Chatter into main file.
 echo Removed Herobrine.
 pause
 goto topreset
