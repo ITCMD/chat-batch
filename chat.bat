@@ -2,9 +2,9 @@
 
 @echo off
 cls
-title ITCMD Chattio Loading . . .
+title CB Chattio by Lucas Elliott with IT COMMAND
 if exist dir.txt cd ..
-set version=[10.30.1]
+set version=[10.30.2]
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
@@ -2808,22 +2808,40 @@ cls
 if /I "%MiniClose%"=="Yes" exit /b
 goto type
 
+
+
 :mini
 if %LegacyMini%==True goto mini2
-if %mini%==True start "" "%~0" & exit
+if %mini%==True goto closemini
+for /f "tokens=1,2* skip=3 delims= " %%a in ('mode con') do (
+	set _lines=%%b
+	goto endline
+)
+:endline
+
+for /f "tokens=1,2* skip=4 delims= " %%a in ('mode con') do (
+	set _cols=%%b
+	goto endcol
+)
+:endcol
 @mode con: cols=80lines=10
 cmdwiz setwindowtransparency 15
 cls
 echo Loading the Always On Top Function...
 echo this may take a few seconds . . .
-setlocal
 call :toggleAlwaysOnTop >nul 2>nul
+set mini=True
 cls
 goto type
 
 
-
-
+:closemini
+@mode con: cols=%_cols%lines=%_lines%
+cmdwiz setwindowtransparency 0
+call :toggleAlwaysOnTop >nul 2>nul
+set mini=false
+cls
+goto type
 
 
 :setting
