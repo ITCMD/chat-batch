@@ -2817,12 +2817,11 @@ cls
 echo Loading the Always On Top Function...
 echo this may take a few seconds . . .
 setlocal
-call :toggleAlwaysOnTop
+call :toggleAlwaysOnTop >nul 2>nul
 cls
 goto type
 
 
-rem // end batch / begin PowerShell hybrid code #>
 
 
 
