@@ -337,7 +337,8 @@ for /f %%a in ('hostname') do (set hostname=%%a)
 (echo [%hostname%])>"%fold2%\Host.inf"
 echo [Hostname]-[Username] >"%fold2%\Users.log"
 md "%fold2%\chat batch file\"
-copy "%~0" "%fold2%\chat.bat"
+copy "%~0" "%fold2%\Installed-Chat-Version.txt"
+(echo Installed %date%-%time%)>"%fold2%\%version:~1,-1%"
 call :c 02 "Downloading Required Setting Files . . ."
 if not exist "%fold2%\Notif\" md "%fold2%\Notif"
 bitsadmin /transfer myDownloadJob /download /priority High  https://raw.githubusercontent.com/ITCMD/chat-batch/master/DefaultSettings.txt "%fold2%\Settings.txt" >nul
@@ -3797,6 +3798,7 @@ call :c f0 "changelog:"
 echo Fixed Mini Chatter
 echo Built Mini Chatter into main file.
 echo Removed Herobrine.
+echo Removed Chat.bat from host folder.
 pause
 goto topreset
 
