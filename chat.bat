@@ -344,7 +344,6 @@ net share CHAT=%fold% /GRANT:EVERYONE,FULL
 Icacls %fold% /grant EVERYONE:F /inheritance:e /T
 icacls %fold% /grant EVERYONE:(OI)(CI)F
 Icacls "%fold2%\Settings.txt" /deny EVERYONE:(W,D,M)
-Icacls "%fold2%\Mini.bat" /deny EVERYONE:(W,D,M)
 Icacls "%fold2%\Local.cmd" /deny EVERYONE:(W,D,M)
 Icacls "%fold2%\Ban" /deny EVERYONE:(W,D,M)
 Icacls "%fold2%\Host.inf" /deny EVERYONE:(W,D,M)
@@ -3732,6 +3731,10 @@ call :c 0f "Downloading . . ."
 bitsadmin /transfer myDownloadJob /download /priority High https://raw.githubusercontent.com/ITCMD/chat-batch/master/chat.bat "%cd%\chatUPDATE.txt" >nul
 call :c 08 "Checking Notification Updates . . ."
 bitsadmin /transfer myDownloadJob /download /priority High https://raw.githubusercontent.com/ITCMD/chat-batch/master/Notif.bat "%cd%\Notif\Notif.bat" >nul
+if not exist \\%hostname%\CHAT\Mini.bat goto skipminicheck
+call :c 08 "Checking Mini-Chatter Updates . . ."
+bitsadmin /transfer myDownloadJob /download /priority High https://raw.githubusercontent.com/ITCMD/chat-batch/master/Mini.bat "\\%hostname%\Mini.bat" >nul
+skipminicheck
 call :c 08 "Installing . . ."
 echo @echo off >update.bat
 (echo title Update Installer . . .
