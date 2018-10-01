@@ -1,4 +1,8 @@
+<# : AlwaysOnTop2.bat -- http://stackoverflow.com/a/37912693/1683264
+
 @echo off
+cls
+title ITCMD Chattio Loading . . .
 if exist dir.txt cd ..
 set version=[10.30.1]
 set setup=False
@@ -26,6 +30,8 @@ if not exist settings.cmd goto findserver
 set color=07
 set 404=Exit
 set BoldColor=0e
+set mini=False
+set LegacyMini=False
 set TextColor=0a
 set endl=No
 set SystemColor=0b
@@ -344,6 +350,7 @@ net share CHAT=%fold% /GRANT:EVERYONE,FULL
 Icacls %fold% /grant EVERYONE:F /inheritance:e /T
 icacls %fold% /grant EVERYONE:(OI)(CI)F
 Icacls "%fold2%\Settings.txt" /deny EVERYONE:(W,D,M)
+Icacls "%fold2%\Mini.bat" /deny EVERYONE:(W,D,M)
 Icacls "%fold2%\Local.cmd" /deny EVERYONE:(W,D,M)
 Icacls "%fold2%\Ban" /deny EVERYONE:(W,D,M)
 Icacls "%fold2%\Host.inf" /deny EVERYONE:(W,D,M)
@@ -2789,10 +2796,10 @@ echo.
 echo contact the owner of %him% to see whats going on.
 call :c 08 "Press any key to redirect to OFFLINE dialog . . ."
 pause>nul
-goto offline
+goto offline 
 
 
-:mini
+:mini2
 if not exist \\%him%\chat\Mini.bat call :404 "Mini.bat"
 if exist Mini.bat del /f /q Mini.bat
 copy /Y "\\%him%\Chat\Mini.bat" "Mini.bat" >nul
@@ -2801,7 +2808,23 @@ cls
 if /I "%MiniClose%"=="Yes" exit /b
 goto type
 
-:mini2
+:mini
+if %LegacyMini%==True goto mini2
+if %mini%==True start "" "%~0" & exit
+@mode con: cols=80lines=10
+cmdwiz setwindowtransparency 15
+cls
+echo Loading the Always On Top Function...
+echo this may take a few seconds . . .
+setlocal
+call :toggleAlwaysOnTop
+cls
+goto type
+
+
+rem // end batch / begin PowerShell hybrid code #>
+
+
 
 
 :setting
@@ -3731,10 +3754,6 @@ call :c 0f "Downloading . . ."
 bitsadmin /transfer myDownloadJob /download /priority High https://raw.githubusercontent.com/ITCMD/chat-batch/master/chat.bat "%cd%\chatUPDATE.txt" >nul
 call :c 08 "Checking Notification Updates . . ."
 bitsadmin /transfer myDownloadJob /download /priority High https://raw.githubusercontent.com/ITCMD/chat-batch/master/Notif.bat "%cd%\Notif\Notif.bat" >nul
-if not exist \\%hostname%\CHAT\Mini.bat goto skipminicheck
-call :c 08 "Checking Mini-Chatter Updates . . ."
-bitsadmin /transfer myDownloadJob /download /priority High https://raw.githubusercontent.com/ITCMD/chat-batch/master/Mini.bat "\\%hostname%\Mini.bat" >nul
-skipminicheck
 call :c 08 "Installing . . ."
 echo @echo off >update.bat
 (echo title Update Installer . . .
@@ -4956,10 +4975,36 @@ echo set WinScriptHost = CreateObject("wscript.shell")>>"chat listener.vbs"
 echo WinScriptHost.CurrentDirectory = "%cd%">>"chat listener.vbs"
 (echo  WinScriptHost.Run chr(34^) ^& "%cd%\chat listener.bat" ^& chr(34^), 0)>>"chat listener.vbs"
 (echo Set WinScriptHost = Nothing)>>"chat listener.vbs"
-exit /b
+exit /b 
 
 ::[========================================================================================================================================]
 ::[                                            SERVER EDITION                                                                              ]
 ::[========================================================================================================================================]
 :server
 echo this aint a thing yet, it might never be idk.
+exit /b
+
+:toggleAlwaysOnTop
+powershell -noprofile "iex (${%~f0} | out-string)"
+goto :EOF
+rem // end batch / begin PowerShell hybrid code #>
+
+add-type user32_dll @'
+    [DllImport("user32.dll")]
+    public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
+        int x, int y, int cx, int cy, uint uFlags);
+
+    [DllImport("user32.dll")]
+    public static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+'@ -namespace System
+
+$id = $PID
+do {
+    $id = (gwmi win32_process -filter "ProcessID='$id'").ParentProcessID
+    $hwnd = (ps -id $id).MainWindowHandle
+} while (-not $hwnd)
+
+$style = [user32_dll]::GetWindowLong($hwnd, -20)
+# // If flag 0x08 is set, make parent HWND -2 to unset it.  Otherwise, HWND -1 to set it.
+[IntPtr]$rootWin = ($style -band 0x08) / -8 - 1
+[void][user32_dll]::SetWindowPos($hwnd, $rootWin, 0, 0, 0, 0, 0x03)
