@@ -3901,7 +3901,7 @@ call :c f0 "changelog:"
 echo Added Code Blocks (surround code with [C] and [/C]).
 echo Added Code Block Clip (Press B to copy recent code block to clip).
 echo Added Automatic Connection
-echo Looked into adding multiple line code blocks/Files. Will add in future.
+echo Added entire Scripts with -B in talk.
 echo Removed Herobrine.
 pause
 goto topreset
