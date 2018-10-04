@@ -4,7 +4,7 @@
 cls
 title CB Chattio by Lucas Elliott with IT COMMAND
 if exist dir.txt cd ..
-set version=[10.30.5]
+set version=[10.30.6]
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
@@ -153,11 +153,11 @@ if not exist "\\%him%\chat\Log.txt" call :404 "Log.txt"
 if not exist C:\users\Public\Chat\localchat.txt echo %date% >C:\users\Public\Chat\localchat.txt
 if not exist C:\users\Public\chat\Localdll.dll echo [Started[%date%]%time%] >C:\users\Public\chat\Localdll.dll
 if not exist "chat-listener.bat" call :createchat
-if not exist "chat listener.vbs" call :createchatvbs
+if not exist "chat-listener.vbs" call :createchatvbs
 echo [S]%TIME: =0%-SERVER} %me% Joined the server >>\\%him%\Chat\chat.txt
 if not exist \\%him%\Chat\log.txt exit /b
 echo %TIME: =0%:   %me%  Joined >>\\%him%\Chat\log.txt
-start "" "chat listener.vbs"
+start "" "chat-listener.vbs"
 
 
 :type	
@@ -2777,6 +2777,7 @@ goto wait
 
 
 :codeClip
+if exist \\%him%\CHAT\Code goto clip2
 if not exist \\%him%\CHAT\CodeBlock.txt call :404 "CodeBlockEntry @ CodeBlock.txt"
 cls
 call :c 0a "Do you want to copy the following text to the clipboard?" /u
@@ -2792,6 +2793,20 @@ echo Copied.
 timeout /t 2 >nul
 goto clstype
 
+:clip2
+cls
+call :c 0a "Do you want to copy the following text to the clipboard?" /u
+echo ==============================================================
+type \\%him%\CHAT\Code
+echo.
+echo ==============================================================
+choice /c YN
+if %errorlevel%==2 goto clstype
+echo Copying . . .
+type \\%him%\CHAT\Code | clip
+echo Copied.
+timeout /t 2 >nul
+goto clstype
 
 
 :clstype
@@ -3657,22 +3672,45 @@ echo For instance ^^!time^^! will display the reader's current time not the time
 echo For a Bold Message add [B] into your message. For an [4munderlined[0m message put [U] Into
 echo your message. If you put a [ at the end of your message
 echo it will not show in chat. Its an easy way to cancel it.
+echo you can also enclose code with [C]code[/C] or add scripts with -B
 echo you can use any other special characters in the chat.
 pause
 cls
 goto type
 
 
-
-
+:script
+echo enter script into text file that will pop up.
+call :C 0f "once done " /n
+call :c 0f "Save it and close it" /u
+echo.>Code
+notepad Code
+cls
+call :c 0a "Upload:"
+echo ======================================
+type Code
+echo ======================================
+choice /c YN
+if %errorlevel%==2 goto clstype
+echo enter description:
+set /p desc=">"
+echo Uploading . . .
+copy Code \\%him%\CHAT\Code >nul
+echo %TIME: =0%-%me%} %desc%: [C]SCRIPT[/C] >> \\%him%\CHAT\Chat.txt
+echo %TIME: =0%-%me%} SCRIPT %desc%:  >> \\%him%\CHAT\LOG.txt
+echo =========================START %desc% >> \\%him%\CHAT\LOG.txt
+type Code >> \\%him%\CHAT\LOG.txt
+echo =========================END %desc% >> \\%him%\CHAT\LOG.txt
+goto clstype
 
 
 :talk
-Title CB Chattio by Lucas Elliott     ========== ENTER -C TO CANCEL -H FOR HELP ============
+Title CB Chattio by Lucas Elliott     ========== ENTER -C TO CANCEL -H FOR HELP -B ENTER SCRIPT ============
 setlocal EnableDelayedExpansion
 set /p msg="%me% Message> "
 if /i "%msg%"=="-C" goto wait
 if /i "%msg%"=="-H" goto help
+if /i "%msg%"=="-B" goto script
 echo "%msg%"| find "[S]" >nul
 if %errorlevel%==0 call :c 0c "Are you the server? No? I didn't Think so." /u& pause &goto type
 if not exist \\%him%\CHAT\ChatDate.txt echo [D]%date% >> \\%him%\CHAT\Chat.txt & echo %date:~7,2%>\\%him%\CHAT\ChatDate.txt
@@ -3680,6 +3718,8 @@ set /p dte=<\\%him%\CHAT\ChatDate.txt
 if not %dte%==%date:~7,2% echo [D]%date% >> \\%him%\CHAT\Chat.txt & echo %date:~7,2%>\\%him%\CHAT\ChatDate.txt
 echo %TIME: =0%-%me%} !msg! >> \\%him%\CHAT\Chat.txt
 echo %TIME: =0%-%me%} !msg! >> \\%him%\CHAT\LOG.txt
+echo !msg!|find "[C]">nul
+if %errorlevel%==0 if exist \\%him%\CHAT\Code del /f /q \\%him%\CHAT\Code
 goto refresh
 
 :upload
@@ -3758,7 +3798,7 @@ for /F "tokens=*" %%A in (New.txt) do (
     if "!line!" neq "!line:[S]=!" set line=%systemColor% "!line:[S]=!"
 	if "!line!" neq "!line:[U]=!" set line=%TextColor% "!line:[U]=!" /u
 	if "!line!" neq "!line:[D]=!" set line=08 "!line:[D]=!"
-	echo !line!|find "Full Chat Cleared" >nul
+	echo !line!|find /I "SERVER} Full Chat Cleared" >nul
 	if !errorlevel!==0 set types=True
     call :c !line!
 )
@@ -3895,13 +3935,14 @@ timeout /t 3 >nul
 del /f /q "chatUPDATE.txt"
 del /f /q "update.bat"
 del /f /q "versionDownload.txt"
+if exist "chat-listener.bat" del /f /q "chat-listener.bat"
 call :c 08 "Cleanup complete."
 echo.
 call :c f0 "changelog:"
 echo Added Code Blocks (surround code with [C] and [/C]).
 echo Added Code Block Clip (Press B to copy recent code block to clip).
 echo Added Automatic Connection
-echo Added entire Scripts with -B in talk.
+echo Added script upload with -B in talk
 echo Removed Herobrine.
 pause
 goto topreset
