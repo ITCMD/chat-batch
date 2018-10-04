@@ -61,7 +61,7 @@ echo WinScriptHost.CurrentDirectory = "%cd%\Notif">>"Notif\Notif.vbs"
 (echo  WinScriptHost.Run chr(34^) ^& "%cd%\Notif\Notif.bat" ^& chr(34^), 0)>>"C:\users\Public\CHAT\Notif.vbs"
 (echo Set WinScriptHost = Nothing)>>"C:\users\Public\CHAT\Notif.vbs"
 if defined NotifSupress goto skipnotif2
-schtasks /query /TN ITCMD-CHAT-NOTIF2 | find "ITCMD-CHAT-NOTIF2                         N/A                    Ready">nul
+schtasks /query /TN ITCMD-CHAT-NOTIF2 | find "ITCMD-CHAT-NOTIF2                        N/A                    Ready">nul
 if %errorlevel%==0 goto skipnotif2
 cls
 call :c 0c "Log On Notifications are dissabled. Would you like to enable them now?"
@@ -83,7 +83,7 @@ set /p cdd=<C:\users\Public\CDC.txt
 cd %cdd%
 call :c 0a "Enabling Notifiactions . . ."
 schtasks /query /TN ITCMD-CHAT-NOTIF | find "ITCMD-CHAT-NOTIF                         N/A                    Ready">nul
-if %errorlevel%==0 schtasks /DELETE /TN ITCMD-CHAT-NOTIF
+if %errorlevel%==0 schtasks /DELETE /TN ITCMD-CHAT-NOTIF /F
 schtasks /Create /TN ITCMD-CHAT-NOTIF2 /SC ONLOGON /tr "C:\users\Public\CHAT\Notif.vbs" /F
 goto topreset
 :skipnotif2
