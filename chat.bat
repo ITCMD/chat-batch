@@ -4,7 +4,7 @@
 cls
 title CB Chattio by Lucas Elliott with IT COMMAND
 if exist dir.txt cd ..
-set version=[10.30.6]
+set version=[10.30.7]
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
@@ -5131,11 +5131,11 @@ exit /b
 
 
 :createchatvbs
-echo Dim WinScriptHost >"chat listener.vbs"
-echo set WinScriptHost = CreateObject("wscript.shell")>>"chat listener.vbs"
-echo WinScriptHost.CurrentDirectory = "%cd%">>"chat listener.vbs"
-(echo  WinScriptHost.Run chr(34^) ^& "%cd%\chat-listener.bat" ^& chr(34^), 0)>>"chat listener.vbs"
-(echo Set WinScriptHost = Nothing)>>"chat listener.vbs"
+echo Dim WinScriptHost >"chat-listener.vbs"
+echo set WinScriptHost = CreateObject("wscript.shell")>>"chat-listener.vbs"
+echo WinScriptHost.CurrentDirectory = "%cd%">>"chat-listener.vbs"
+(echo  WinScriptHost.Run chr(34^) ^& "%cd%\chat-listener.bat" ^& chr(34^), 0)>>"chat-listener.vbs"
+(echo Set WinScriptHost = Nothing)>>"chat-listener.vbs"
 exit /b 
 
 ::[========================================================================================================================================]
