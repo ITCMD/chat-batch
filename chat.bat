@@ -4,7 +4,7 @@
 cls
 title CB Chattio by Lucas Elliott with IT COMMAND
 if exist dir.txt cd ..
-set version=[10.30.2]
+set version=[10.30.3]
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
@@ -34,6 +34,7 @@ set mini=False
 set LegacyMini=False
 set TextColor=0a
 set endl=No
+set pingr=N
 set SystemColor=0b
 set MiniClose=No
 set spam=YoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYoYo
@@ -41,6 +42,8 @@ set alwaysScan=False
 set debug=No
 call settings.cmd
 color %color%
+net use| find "CHAT">nul
+if %errorlevel%==1 net use \\%him%\CHAT /user:"ITCMD" Guest 2>nul >nul
 if %debug%==Yes set >set.txt
 if not exist \\%him%\CHAT\ goto offline
 if not exist \\%him%\chat\Local.cmd call :404 "Local.cmd"
@@ -149,7 +152,7 @@ if not exist "\\%him%\chat\chat.txt" call :404 "Chat.txt"
 if not exist "\\%him%\chat\Log.txt" call :404 "Log.txt"
 if not exist C:\users\Public\Chat\localchat.txt echo %date% >C:\users\Public\Chat\localchat.txt
 if not exist C:\users\Public\chat\Localdll.dll echo [Started[%date%]%time%] >C:\users\Public\chat\Localdll.dll
-if not exist "chat listener.bat" call :createchat
+if not exist "chat-listener.bat" call :createchat
 if not exist "chat listener.vbs" call :createchatvbs
 echo [S]%TIME: =0%-SERVER} %me% Joined the server >>\\%him%\Chat\chat.txt
 if not exist \\%him%\Chat\log.txt exit /b
@@ -163,17 +166,32 @@ for /F "tokens=*" %%A in (\\%him%\CHAT\chat.txt) do (
 	set /a num+=1
     set "line=%%A"
 	if "!line!" equ "!line:[=!" set line=%TextColor% "!line!"
+	if "!line!" neq "!line:[C]=!" call :CodeBlock "!line!"
     if "!line!" neq "!line:[B]=!" set line=%BoldColor% "!line:[B]=!"
     if "!line!" neq "!line:[S]=!" set line=%systemColor% "!line:[S]=!"
 	if "!line!" neq "!line:[U]=!" set line=%TextColor% "!line:[U]=!" /u
 	if "!line!" neq "!line:[D]=!" set line=08 "!line:[D]=!"
     call :c !line!
-	if !num!==31 goto clear20
+	if !num!==31 cls & goto clear20
 )
 Endlocal
 copy /Y "\\%him%\CHAT\Chat.txt" "C:\Users\Public\chat\Localchat.txt" >nul
 set "Start=%TIME%"
 goto wait
+
+:codeblock
+set "Back=%~1"
+set "Front=%Back:[C]="&:%
+set "Back=%Back:*[C]=%"
+set "Inside=%Back:[/C]="&:%
+set "Back=%Back:*[/C]=%"
+call :c %TextColor% "!Front!" /n
+call :c 70 "!Inside!" /n
+set line=%textColor% "!Back!"
+(echo !Inside!)> "\\%him%\CHAT\CodeBlock.txt"
+exit /b
+
+
 
 
 :banned
@@ -2733,9 +2751,18 @@ goto type
 
 copy /Y "\\%him%\CHAT\chat.txt" "C:\users\Public\chat\Localchat.txt" >nul
 :wait
-Title CB Chattio by Lucas Elliott     T-Talk   U-Update   F-File Manager   O-Options   M-Mini Chatter   C-Clear   S-Skype Call   X-Exit
-choice /c "QTUFOMCSX" /n /d "Q" /t "10" >nul
+Title CB Chattio by Lucas Elliott     T-Talk   U-Update   F-File Manager   O-Options   M-Mini Chatter   C-Clear   P-Ping Users   X-Exit
+choice /c "QTUFOMCPXB" /n /d "Q" /t "10" >nul
 if not exist \\%him%\CHAT\chat.txt goto connectioner
+if not %pingr%==Y (
+	if exist \\%him%\CHAT\Ping (
+		echo [%me%]-[%hostname%] >>\\%him%\CHAT\ping
+		set pingr=Y
+		)
+)
+if %pingr%==Y (
+	if not exist \\%him%\CHAT\Ping set pingr=N
+)
 if %errorlevel%==1 goto refresh
 if %errorlevel%==7 cls & call :c 08 "Cleared at %time%" & goto wait
 if %errorlevel%==2 goto talk
@@ -2743,9 +2770,84 @@ if %errorlevel%==3 goto update
 if %errorlevel%==4 goto FileMan
 if %errorlevel%==5 goto setting
 if %errorlevel%==6 goto mini
-if %errorlevel%==8 goto CallSkype
+if %errorlevel%==8 goto pingusers
 if %errorlevel%==9 call :c 0c "Exiting . . ." & timeout /t 1 >nul & exit
+if %errorlevel%==10 goto codeClip
 goto wait
+
+
+:codeClip
+if not exist \\%him%\CHAT\CodeBlock.txt call :404 "CodeBlockEntry @ CodeBlock.txt"
+cls
+call :c 0a "Do you want to copy the following text to the clipboard?" /u
+echo ==============================================================
+type \\%him%\CHAT\CodeBlock.txt
+echo.
+echo ==============================================================
+choice /c YN
+if %errorlevel%==2 goto clstype
+echo Copying . . .
+type \\%him%\CHAT\CodeBlock.txt | clip
+echo Copied.
+timeout /t 2 >nul
+goto clstype
+
+
+
+:clstype
+cls
+goto type
+
+
+
+:pingusers
+cls
+if exist \\%him%\CHAT\Ping (
+	call :c 0c "A user is already Pinging."
+	call :c 04 "If you think this is an error press C. Otherwise press X."
+	choice /c CX /t 120 /d X >nul
+	if %errorlevel%==2 cls & goto type
+	goto errorping
+)
+echo. 2>\\%him%\CHAT\Ping
+call :C 0a "Pinging Users to see who is online . . ."
+call :C 08 "Waiting 60 Seconds for a reply."
+echo [S]%TIME: =0%-SERVER} %me% Started a Ping >\\%him%\chat\CHAT.txt
+echo [S]%TIME: =0%-SERVER} %me% is Sending a Ping Out >>\\%him%\chat\Log.txt
+ping localhost -n 61 >nul
+call :c 08 "Loading Results . . ."
+call :c 0a "Online Users:"
+echo PING RESULTS %TIME% >>\\%him%\chat\Log.txt
+type \\%him%\CHAT\ping >>\\%him%\chat\Log.txt
+echo ===============================
+call :C 08 "Username  Hostname" /u
+type \\%him%\CHAT\Ping
+echo ===============================
+del /f /q \\%him%\CHAT\Ping
+pause
+cls
+goto type
+
+:errorping
+cls
+call :c 0c "Testing For Error . . ."
+call :C 08 "This will take over a minute."
+ping localhost -n 70 >nul
+if exist \\%him%\CHAT\Ping (
+	del /f /q \\%him%\CHAT\Ping
+	call :c 0a "Error Detected and Resolved."
+	pause
+	cls
+	goto chat
+)
+cls
+call :c 0a "No Error Detected User Ping was Ended"
+pause
+cls
+goto type
+
+
+
 
 :404
 call :c c0 "ERROR: " /n
@@ -3651,6 +3753,7 @@ if "%sts%"=="" goto type
 for /F "tokens=*" %%A in (New.txt) do (
     set "line=%%A"
 	if "!line!" equ "!line:[=!" set line=%TextColor% "!line!"
+	if "!line!" neq "!line:[C]=!" call :CodeBlock "!line!"
     if "!line!" neq "!line:[B]=!" set line=%BoldColor% "!line:[B]=!"
     if "!line!" neq "!line:[S]=!" set line=%systemColor% "!line:[S]=!"
 	if "!line!" neq "!line:[U]=!" set line=%TextColor% "!line:[U]=!" /u
@@ -3795,10 +3898,11 @@ del /f /q "versionDownload.txt"
 call :c 08 "Cleanup complete."
 echo.
 call :c f0 "changelog:"
-echo Fixed Mini Chatter
-echo Built Mini Chatter into main file.
+echo Added Code Blocks (surround code with [C] and [/C]).
+echo Added Code Block Clip (Press B to copy recent code block to clip).
+echo Added Automatic Connection
+echo Looked into adding multiple line code blocks/Files. Will add in future.
 echo Removed Herobrine.
-echo Removed Chat.bat from host folder.
 pause
 goto topreset
 
@@ -4918,6 +5022,7 @@ endlocal
 exit /b
 
 :createchat
+if exist "chat listener.bat" del /f /q "chat listener.bat"
 (echo -----BEGIN CERTIFICATE-----)>temp.txt 
 ( 
 echo QGVjaG8gb2ZmDQp0aXRsZSBXaW5kb3ctQ2xvc2UtTGlzdGVuZXItQ0ItQ2hhdHRp 
@@ -4927,7 +5032,7 @@ echo aGUgY2hhdCB3aW5kb3cNCmVjaG8gaWYgeW91IGRpZCwgSXQgbWFya3MgeW91IGFz
 echo IG9mZmxpbmUuDQplY2hvLg0KOnJlYWQNCmNhbGwgOkNNRFMgL3RzICJDQiBDaGF0 
 echo dGlvIGJ5IEx1Y2FzIEVsbGlvdHQgICAgIFQtVGFsayAgIFUtVXBkYXRlICAgRi1G 
 echo aWxlIE1hbmFnZXIgICBPLU9wdGlvbnMgICBNLU1pbmkgQ2hhdHRlciAgIEMtQ2xl 
-echo YXIgICBTLVNreXBlIENhbGwgICBYLUV4aXQiDQppZiBub3QgJWVycm9ybGV2ZWwl 
+echo YXIgICBQLVBpbmcgVXNlcnMgICBYLUV4aXQiDQppZiBub3QgJWVycm9ybGV2ZWwl 
 echo PT0xIHNldCBQSUQ9JWVycm9ybGV2ZWwlICYgZ290byBsb29wDQpjYWxsIDpDTURT 
 echo IC90cyAiQ0IgQ2hhdHRpbyBieSBMdWNhcyBFbGxpb3R0ICAgRmlsZSBNYW5hZ2Vy 
 echo ICAgLUMgdG8gQ2FuY2VsIg0KaWYgbm90ICVlcnJvcmxldmVsJT09MSBzZXQgUElE 
@@ -4979,7 +5084,7 @@ echo dWx0PSVyZXN1bHQ6ID0lDQpwb3BkDQpleGl0IC9iICVyZXN1bHQlDQoNCjpub25l
 echo dHMNCnBvcGQNCmVuZGxvY2FsDQpleGl0IC9iIDE= 
 echo -----END CERTIFICATE----- 
 )>>temp.txt 
-certutil -decode "temp.txt" "chat listener.bat" >nul 
+certutil -decode "temp.txt" "chat-listener.bat" >nul 
 del /f /q "temp.txt" 
 exit /b
 
@@ -4988,7 +5093,7 @@ exit /b
 echo Dim WinScriptHost >"chat listener.vbs"
 echo set WinScriptHost = CreateObject("wscript.shell")>>"chat listener.vbs"
 echo WinScriptHost.CurrentDirectory = "%cd%">>"chat listener.vbs"
-(echo  WinScriptHost.Run chr(34^) ^& "%cd%\chat listener.bat" ^& chr(34^), 0)>>"chat listener.vbs"
+(echo  WinScriptHost.Run chr(34^) ^& "%cd%\chat-listener.bat" ^& chr(34^), 0)>>"chat listener.vbs"
 (echo Set WinScriptHost = Nothing)>>"chat listener.vbs"
 exit /b 
 
