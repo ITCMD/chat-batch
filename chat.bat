@@ -4,7 +4,7 @@
 cls
 title CB Chattio by Lucas Elliott with IT COMMAND
 if exist dir.txt cd ..
-set version=[10.30.7]
+set version=[10.30.8]
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
@@ -53,15 +53,15 @@ if not exist Notif\ md Notif\
 copy "\\%him%\CHAT\Notif\Notif.bat" "Notif\Notif.bat" >nul
 copy "settings.cmd" "Notif\settings.cmd" >nul
 (echo %~0)> "Notif\dir.txt
-echo Dim WinScriptHost >"Notif\Notif.vbs"
-echo set WinScriptHost = CreateObject("wscript.shell")>>"Notif\Notif.vbs"
-echo WinScriptHost.CurrentDirectory = "%cd%\Notif">>"Notif\Notif.vbs"
-(echo  WinScriptHost.Run chr(34^) ^& "%cd%\Notif\Notif.bat" ^& chr(34^), 0)>>"Notif\Notif.vbs"
-(echo Set WinScriptHost = Nothing)>>"Notif\Notif.vbs"
 :skipnotif
 if exist NoNotif goto skipnotif2
+echo Dim WinScriptHost >"C:\users\Public\CHAT\Notif.vbs"
+echo set WinScriptHost = CreateObject("wscript.shell")>>"C:\users\Public\CHAT\Notif.vbs"
+echo WinScriptHost.CurrentDirectory = "%cd%\Notif">>"Notif\Notif.vbs"
+(echo  WinScriptHost.Run chr(34^) ^& "%cd%\Notif\Notif.bat" ^& chr(34^), 0)>>"C:\users\Public\CHAT\Notif.vbs"
+(echo Set WinScriptHost = Nothing)>>"C:\users\Public\CHAT\Notif.vbs"
 if defined NotifSupress goto skipnotif2
-schtasks /query /TN ITCMD-CHAT-NOTIF | find "ITCMD-CHAT-NOTIF                         N/A                    Ready">nul
+schtasks /query /TN ITCMD-CHAT-NOTIF2 | find "ITCMD-CHAT-NOTIF2                         N/A                    Ready">nul
 if %errorlevel%==0 goto skipnotif2
 cls
 call :c 0c "Log On Notifications are dissabled. Would you like to enable them now?"
@@ -70,6 +70,7 @@ choice /c YN
 cls
 if %errorlevel%==1 goto getnotif
 call :c 0f "Would you like to supress this message?"
+call :c 08 "Again, you can change this in settings"
 choice /c YN
 if %errorlevel%==1 echo. >NoNotif
 goto skipnotif2
@@ -81,7 +82,9 @@ powershell start -verb runas '%0' Notif & exit /b
 set /p cdd=<C:\users\Public\CDC.txt
 cd %cdd%
 call :c 0a "Enabling Notifiactions . . ."
-schtasks /Create /TN ITCMD-CHAT-NOTIF /SC ONLOGON /tr "%cd%\Notif\Notif.vbs" /F
+schtasks /query /TN ITCMD-CHAT-NOTIF | find "ITCMD-CHAT-NOTIF                         N/A                    Ready">nul
+if %errorlevel%==0 schtasks /DELETE /TN ITCMD-CHAT-NOTIF
+schtasks /Create /TN ITCMD-CHAT-NOTIF2 /SC ONLOGON /tr "C:\users\Public\CHAT\Notif.vbs" /F
 goto topreset
 :skipnotif2
 cls
@@ -3939,9 +3942,10 @@ if exist "chat-listener.bat" del /f /q "chat-listener.bat"
 call :c 08 "Cleanup complete."
 echo.
 call :c f0 "changelog:"
-echo Added Code Blocks (surround code with [C] and [/C]).
-echo Added Code Block Clip (Press B to copy recent code block to clip).
-echo Added Automatic Connection
+echo Fixed a couple tyops.
+echo typos*.
+echo Dramatically improved Notifications and made it more stable.
+echo You will have to re-enable Notifications (it will auto delete the old ones when you do so)
 echo Added script upload with -B in talk
 echo Removed Herobrine.
 pause
