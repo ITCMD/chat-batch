@@ -2820,8 +2820,8 @@ cls
 if exist \\%him%\CHAT\Ping (
 	call :c 0c "A user is already Pinging."
 	call :c 04 "If you think this is an error press C. Otherwise press X."
-	choice /c CX /t 120 /d X >nul
-	if %errorlevel%==2 cls & goto type
+	choice /c CX 
+	if !errorlevel!==2 goto clstype
 	goto errorping
 )
 echo. 2>\\%him%\CHAT\Ping
