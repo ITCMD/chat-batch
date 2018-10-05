@@ -443,11 +443,11 @@ notification.exe -title "New Message on CB Chattio" -body "New Messages on the C
 exit /b
 
 :wait
-if defined wait exit /b
+if defined wait goto wait2
 set wait=%date%
 timeout /t 20
 goto top
 
 :wait2
-timeout /t 120
+timeout /t 300
 goto top
