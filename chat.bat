@@ -1,10 +1,14 @@
 <# : AlwaysOnTop2.bat -- http://stackoverflow.com/a/37912693/1683264
-
 @echo off
+
+
+::Updates to be done:
+:: New Sounds
+:: New Notif Release (AUTO)
 cls
 title CB Chattio by Lucas Elliott with IT COMMAND
 if exist dir.txt cd ..
-set version=[10.30.8]
+set version=[11.02.7]
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
@@ -488,9 +492,10 @@ set ran=%random%%random%
 set ip=%1
 set to=%2
 echo @echo off >RunTM.temp%ran%.bat
-(echo set val=0
-echo if exist \\%ip%\CHAT\ set val=1 
-echo if %%val%%==1 echo %ip%^>found.txt 
+(echo set val=1
+echo net use \\%ip%\CHAT /user:"PING" ITCMD
+echo set val=%%errorlevel%%
+echo if %%val%%==0 echo %ip%^>found.txt 
 )>>RunTM.temp%ran%.bat
 echo Dim WinScriptHost >RunTM%ran%.vbs
 echo set WinScriptHost = CreateObject("wscript.shell")>>Runtm%ran%.vbs
@@ -531,6 +536,7 @@ if exist \\Localhost\chat call :c 0a "This PC has a chat server on it. Enter Loc
 set /p nme=">"
 ping %nme% -n 1 >nul
 set nmes=%errorlevel%
+net use \\%nme%\CHAT /user:"ITCMD" Guest >nul 2>nul
 if exist "\\%nme%\CHAT\" (
 	set nmec=0
 ) ELSE (
@@ -3942,11 +3948,9 @@ if exist "chat-listener.bat" del /f /q "chat-listener.bat"
 call :c 08 "Cleanup complete."
 echo.
 call :c f0 "changelog:"
-echo Fixed a couple tyops.
-echo typos*.
-echo Dramatically improved Notifications and made it more stable.
-echo You will have to re-enable Notifications (it will auto delete the old ones when you do so)
-echo Added script upload with -B in talk
+echo Update 11:
+echo Fixed a bunch of stuff and made the first official release!
+echo Dramatically improved stability and compatability. Should work on all Windows 10 Systems.
 echo Removed Herobrine.
 pause
 goto topreset
