@@ -437,8 +437,8 @@ call settings.cmd
 if not exist C:\Users\Public\chat\Localchat.txt exit /b
 if not exist \\%him%\CHAT\chat.txt goto wait2
 fc C:\Users\Public\chat\Localchat.txt \\%him%\CHAT\chat.txt
-set /p dir=<dir.txt
 if %errorlevel%==0 goto wait
+set /p dir=<dir.txt
 notification.exe -title "New Message on CB Chattio" -body "New Messages on the CB chattio. Click to open." -icon icon.ico -keepopen n -start "%dir%"
 exit /b
 
