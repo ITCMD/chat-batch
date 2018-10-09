@@ -1,14 +1,11 @@
 <# : AlwaysOnTop2.bat -- http://stackoverflow.com/a/37912693/1683264
 @echo off
-
-
 ::Updates to be done:
 :: New Sounds
-:: New Notif Release (AUTO)
 cls
 title CB Chattio by Lucas Elliott with IT COMMAND
 if exist dir.txt cd ..
-set version=[11.02.7]
+set version=[11.02.8]
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
@@ -61,7 +58,7 @@ copy "settings.cmd" "Notif\settings.cmd" >nul
 if exist NoNotif goto skipnotif2
 echo Dim WinScriptHost >"C:\users\Public\CHAT\Notif.vbs"
 echo set WinScriptHost = CreateObject("wscript.shell")>>"C:\users\Public\CHAT\Notif.vbs"
-echo WinScriptHost.CurrentDirectory = "%cd%\Notif">>"Notif\Notif.vbs"
+echo WinScriptHost.CurrentDirectory = "%cd%\Notif">>"C:\users\Public\CHAT\Notif.vbs"
 (echo  WinScriptHost.Run chr(34^) ^& "%cd%\Notif\Notif.bat" ^& chr(34^), 0)>>"C:\users\Public\CHAT\Notif.vbs"
 (echo Set WinScriptHost = Nothing)>>"C:\users\Public\CHAT\Notif.vbs"
 if defined NotifSupress goto skipnotif2
@@ -3807,10 +3804,10 @@ for /F "tokens=*" %%A in (New.txt) do (
     if "!line!" neq "!line:[S]=!" set line=%systemColor% "!line:[S]=!"
 	if "!line!" neq "!line:[U]=!" set line=%TextColor% "!line:[U]=!" /u
 	if "!line!" neq "!line:[D]=!" set line=08 "!line:[D]=!"
-	echo !line!|find /I "SERVER} Full Chat Cleared" >nul
-	if !errorlevel!==0 set types=True
     call :c !line!
 )
+echo !line! |find /I "-SERVER} Full Chat Cleared">nul
+if %errorlevel%==0 cls
 copy /Y "\\%him%\CHAT\chat.txt" "C:\users\Public\chat\Localchat.txt" >nul
 if not exist C:\users\Public\Chat\Mute cmdwiz playsound tick.wav
 set "End=%TIME%"
