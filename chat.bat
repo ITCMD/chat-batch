@@ -2947,7 +2947,7 @@ for /f "tokens=1,2* skip=4 delims= " %%a in ('mode con') do (
 )
 :endcol
 @mode con: cols=80lines=10
-cmdwiz setwindowtransparency 15
+cmdwiz setwindowtransparency 20
 cls
 echo Loading the Always On Top Function...
 echo this may take a few seconds . . .
