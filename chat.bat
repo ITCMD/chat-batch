@@ -98,7 +98,7 @@ find "[%me%]-[%hostname%]" "\\%him%\chat\Users.log" >nul
 if %errorlevel%==1 echo [%me%]-[%hostname%]>>"\\%him%\chat\Users.log"
 :skiphost
 timeout /t 1 >nul
-if "%cls%"=="True" cls
+cls
 if not exist \\%him%\CHAT\Ban call :404 "Ban"
 for /f "delims=[] tokens=2" %%a in ('ping -4 -n 1 %ComputerName% ^| findstr [') do set NetworkIP=%%a
 for /f %%a in ('hostname') do (set hostname=%%a)
