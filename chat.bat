@@ -5,7 +5,7 @@
 cls
 title CB Chattio by Lucas Elliott with IT COMMAND
 if exist dir.txt cd ..
-set version=[11.02.8]
+set version=[11.02.9]
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
@@ -3576,16 +3576,27 @@ goto setting
 
 :log
 cls
-call :c 0a "Loading Log . . ."
+call :c 02 "Loading Log . . ."
+timeout /t 2 >nul
+echo.
+call :c 0a "Log File:"
+call :c 0a "=================================================================="
+type "\\%him%\chat\Log.txt"
+call :c 0a "=================================================================="
+echo %TIME: =0%-SERVER} %me% viewed the Log >> \\%him%\CHAT\LOG.txt
+echo Press O to view Log in text document. Press X to close.
+choice /c OX
+if %errorlevel%==2 goto setting
+call :c 0a "Loading Log File . . ."
 call :c 08 "Note: Changes you make to the log will not be saved."
 timeout /t 2 >nul
 copy /Y "\\%him%\chat\Log.txt" "C:\users\Public\chat\Log.txt"
 call :c 0a "Opening . . ."
-echo %TIME: =0%-SERVER} %me% viewed the Log >> \\%him%\CHAT\LOG.txt
 notepad "C:\users\Public\chat\Log.txt"
 cls
 del /f /q "C:\users\Public\chat\Log.txt"
 goto setting
+
 
 
 :cmdvar
@@ -3945,9 +3956,8 @@ if exist "chat-listener.bat" del /f /q "chat-listener.bat"
 call :c 08 "Cleanup complete."
 echo.
 call :c f0 "changelog:"
-echo Update 11:
-echo Fixed a bunch of stuff and made the first official release!
-echo Dramatically improved stability and compatability. Should work on all Windows 10 Systems.
+echo Made changes to the log viewer.
+echo Researched a bug report system. Should be available in the next release.
 echo Removed Herobrine.
 pause
 goto topreset
