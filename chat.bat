@@ -2,6 +2,7 @@
 @echo off
 ::Updates to be done:
 :: New Sounds
+:: FTP Bug Reports
 cls
 title CB Chattio by Lucas Elliott with IT COMMAND
 if exist dir.txt cd ..
