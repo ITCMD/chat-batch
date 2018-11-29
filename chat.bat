@@ -2,11 +2,10 @@
 @echo off
 ::Updates to be done:
 :: New Sounds
-:: FTP Bug Reports
 cls
 title CB Chattio by Lucas Elliott with IT COMMAND
 if exist dir.txt cd ..
-set version=[11.02.9]
+set version=[11.03.0]
 set setup=False
 setlocal EnableDelayedExpansion
 if "%~1"=="notif1" goto Enable1
@@ -2758,7 +2757,7 @@ goto type
 
 copy /Y "\\%him%\CHAT\chat.txt" "C:\users\Public\chat\Localchat.txt" >nul
 :wait
-Title CB Chattio by Lucas Elliott     T-Talk   U-Update   F-File Manager   O-Options   M-Mini Chatter   C-Clear   P-Ping Users   X-Exit
+Title CB Chattio by Lucas Elliott     T-Talk   U-Update   F-File Manager   O-Options   M-Mini Chatter   C-Clear   P-Ping Users   X-Exit   B-Code Snippits
 choice /c "QTUFOMCPXB" /n /d "Q" /t "10" >nul
 if not exist \\%him%\CHAT\chat.txt goto connectioner
 if not %pingr%==Y (
@@ -2948,7 +2947,7 @@ for /f "tokens=1,2* skip=4 delims= " %%a in ('mode con') do (
 )
 :endcol
 @mode con: cols=80lines=10
-cmdwiz setwindowtransparency 20
+cmdwiz setwindowtransparency 27
 cls
 echo Loading the Always On Top Function...
 echo this may take a few seconds . . .
@@ -2983,8 +2982,10 @@ call :c 0f "6] Ban Menu"
 schtasks /query /TN ITCMD-CHAT-NOTIF 2>nul| find "ITCMD-CHAT-NOTIF                         N/A                    Ready">nul 
 if %errorlevel%==0 call :c 0f "7] Dissable Notifications"
 if %errorlevel%==1 call :c 0f "7] Enable Notifications"
-call :c 07 "8] Exit"
-choice /c "12345678"
+call :c 07 "8] Report Bugs"
+call :c 08 "9] Exit"
+call :c 06 "Press N to view more options"
+choice /c "123456789n"
 if %errorlevel%==1 goto sound
 if %errorlevel%==2 goto cmdvar
 if %errorlevel%==3 notepad "settings.cmd" & cls & goto topreset
@@ -2992,7 +2993,150 @@ if %errorlevel%==4 call :c 0c "Clearing Chat . . ." & timeout /t 2 >nul & goto c
 if %errorlevel%==5 goto log
 if %errorlevel%==6 goto ban
 if %errorlevel%==7 goto notifTog
+if %errorlevel%==8 goto bug
+if %errorlevel%==10 goto settingtwo
 cls & goto type
+
+
+:settingtwo
+cls
+call :c 0f " Options Menu:" /n
+call :c 06 "   Page Two"
+call :c 0b "------------------------------"
+call :c 0f "1] Hamachi Guide"
+call :c 08 "2] Exit"
+call :c 06 "Press N to view previous options"
+choice /c "12n"
+if %errorlevel%==1 goto hamachig
+if %errorlevel%==3 goto setting
+cls & goto type
+
+
+:hamachig
+cls
+call :c 0a "---------------------------- Hamachi Guide ----------------------------"
+echo Hamachi (Also known as Logmein) is a simple and easy to use service 
+echo that allows you to create a virtual LAN network. This means that any 
+echo devices that join your Hamachi network appear to be on the same local 
+echo network as you. This allows you to chat with computers outside your LAN. 
+echo Simply Download Hamachi from www.vpn.net (press O to open the link), 
+echo and create a new network. You will then have a unique ID to give to 
+echo other users so they too can connect to your LAN. You can add a password 
+echo or require your permission for users to join. The only downside of this 
+echo is that the chat program's search IP function does not work. This is because 
+echo the unique IP address that appears to be on your network is much more random 
+echo and is often out of range of the detection service. However, the hostname 
+echo of your chat server will still be a viable way to connect. You can also 
+echo find the direct IP in the settings of the hamachi service. Just note 
+echo that you will have to run the hamachi service to use the chat program. 
+echo You can set hamachi to launch on startup though, and it uses little-to-no 
+echo computer resources. 
+call :c 0a "--------------------------- Press X to Exit ---------------------------"
+:hamchoice
+choice /c ox /n
+if %errorlevel%==1 start www.vpn.net & goto hamchoice
+goto settingtwo
+
+:alreadrep
+cls
+echo You have already reported a bug today.
+echo Please Wait until tomorrow.
+call :c 08 "Press any key to exit back to menu . . ."
+pause>nul
+goto setting
+
+
+:alreadyrep
+cls
+call :c 0c "You have already reported a bug today."
+echo Please wait until tomorrow to report another bug.
+pause
+goto setting
+
+
+:bugcheck
+for /F "skip=1 delims=" %%F in ('
+    wmic PATH Win32_LocalTime GET Day^,Month^,Year /FORMAT:TABLE
+') do (
+    for /F "tokens=1-3" %%L in ("%%F") do (
+        set CurrDay=0%%L
+    )
+)
+set CurrDay=%CurrDay:~-2%
+set /p lastday=<C:\users\Public\BugDay.txt
+if %lastday%==%currDay% goto alreadyrep
+exit /b
+
+:bug
+if exist C:\users\Public\BugDay.txt call :bugcheck
+cls
+echo Are you sure you want to report a bug? (Press Y/N)
+call :c 08 "You can only send one bug report each day."
+choice /c YN /n
+if %errorlevel%==2 goto setting
+cls
+echo What Type of Bug is it?
+echo.
+call :c 0f "1] Connection bug (Could not connect to chat server)"
+call :c 0f "2] Option or menu bug (Program crashes when preforming a certain action)"
+call :c 0f "3] Typo or grammar mistke (Helo thar)"
+call :c 0f "4] Updator error (Problem updating)"
+call :c 0f "5] Other (Something else)"
+call :c 0f "X] Exit (cancel Bug Report)"
+choice /c 12345x /m "Press a key"
+if %errorlevel%==1 set type=1& set description=Connection bug
+if %errorlevel%==2 set type=2& set description=Option or menu bug
+if %errorlevel%==3 set type=3& set description=Typo or grammar
+if %errorlevel%==4 set type=4& set description=Updator
+if %errorlevel%==5 set type=5& set /p description="Enter Title:"
+if %errorlevel%==6 goto setting
+echo.
+call :c 0f "A New Window will open in notepad. Type in your description of the bug as well"
+call :c 0f "Enter Description (details and any links to screenshots) in the window, then " /n
+call :c 0f "close it and save it" /u
+call :c 0c "To Cancel the report enter [CANCEL] in the file somewhere and save and close."
+pause
+echo. 2>Bug-Report.txt
+notepad Bug-Report.txt
+find "[CANCEL]" "Bug-Report.txt" >nul 2>nul
+if %errorlevel%==0 del /f /q Bug-Report.txt & goto setting
+echo Prepping . . .
+set ID=%random%%random%%random%
+Set BugID=%ID%.%type%.txt
+for /f "tokens=1* delims=: " %%A in (
+  'nslookup myip.opendns.com. resolver1.opendns.com 2^>NUL^|find "Address:"'
+) Do set ExtIP=%%B
+echo Bug Report from %date% %time% by %Hostname% at %ExtIP% >%BugID%
+echo =========================================================================================== >>%BugID%
+echo Type: %type% >>%BugID%
+echo     : %Description% >>%BugID%
+echo =========================================================================================== >>%BugID%
+echo Report: >>%BugID%
+type Bug-Report.txt >>%BugID%
+echo. >>%BugID%
+echo =========================================================================================== >>%BugID%
+(echo bug)>ftp.inf
+(echo bug#223)>>ftp.inf
+(echo put %BugID%)>>ftp.inf
+(echo quit)>>ftp.inf
+ftp -s:ftp.inf ftp.itcommand.tech>nul
+for /F "skip=1 delims=" %%F in ('
+    wmic PATH Win32_LocalTime GET Day^,Month^,Year /FORMAT:TABLE
+') do (
+    for /F "tokens=1-3" %%L in ("%%F") do (
+        set CurrDay=0%%L
+    )
+)
+set CurrDay=%CurrDay:~-2%
+(echo %CurrDay%)>C:\users\Public\BugDay.txt
+if not %errorlevel%==0 call :c 04 "A server error occured, report may not have been sent."
+call :c 0a "Bug Report Sent Successfuly."
+call :c 02 "Your ID: %ID%"
+echo.
+echo Press any key to close to menu . . .
+pause >nul
+goto setting
+
 
 :notifTog
 cls
@@ -3957,9 +4101,11 @@ if exist "chat-listener.bat" del /f /q "chat-listener.bat"
 call :c 08 "Cleanup complete."
 echo.
 call :c f0 "changelog:"
-echo Made changes to the log viewer.
-echo Researched a bug report system. Should be available in the next release.
+echo made the mini-chatter more transparent.
+echo BUG REPORTING NOW IN OPTIONS MENU.
 echo Removed Herobrine.
+echo Updated the title bar to include script snippits.
+echo Added a Hamachi Guide
 pause
 goto topreset
 
@@ -5089,56 +5235,57 @@ echo aGUgY2hhdCB3aW5kb3cNCmVjaG8gaWYgeW91IGRpZCwgSXQgbWFya3MgeW91IGFz
 echo IG9mZmxpbmUuDQplY2hvLg0KOnJlYWQNCmNhbGwgOkNNRFMgL3RzICJDQiBDaGF0 
 echo dGlvIGJ5IEx1Y2FzIEVsbGlvdHQgICAgIFQtVGFsayAgIFUtVXBkYXRlICAgRi1G 
 echo aWxlIE1hbmFnZXIgICBPLU9wdGlvbnMgICBNLU1pbmkgQ2hhdHRlciAgIEMtQ2xl 
-echo YXIgICBQLVBpbmcgVXNlcnMgICBYLUV4aXQiDQppZiBub3QgJWVycm9ybGV2ZWwl 
-echo PT0xIHNldCBQSUQ9JWVycm9ybGV2ZWwlICYgZ290byBsb29wDQpjYWxsIDpDTURT 
-echo IC90cyAiQ0IgQ2hhdHRpbyBieSBMdWNhcyBFbGxpb3R0ICAgRmlsZSBNYW5hZ2Vy 
-echo ICAgLUMgdG8gQ2FuY2VsIg0KaWYgbm90ICVlcnJvcmxldmVsJT09MSBzZXQgUElE 
-echo PSVlcnJvcmxldmVsJSAmIGdvdG8gbG9vcA0KY2FsbCA6Q01EUyAvdHMgIkNCIENo 
-echo YXR0aW8gYnkgTHVjYXMgRWxsaW90dCAgICAgPT09PT09PT09PSBFTlRFUiAtQyBU 
-echo TyBDQU5DRUwgLUggRk9SIEhFTFAgPT09PT09PT09PT09Ig0KaWYgbm90ICVlcnJv 
+echo YXIgICBQLVBpbmcgVXNlcnMgICBYLUV4aXQgICBCLUNvZGUgU25pcHBpdHMiDQpp 
+echo ZiBub3QgJWVycm9ybGV2ZWwlPT0xIHNldCBQSUQ9JWVycm9ybGV2ZWwlICYgZ290 
+echo byBsb29wDQpjYWxsIDpDTURTIC90cyAiQ0IgQ2hhdHRpbyBieSBMdWNhcyBFbGxp 
+echo b3R0ICAgRmlsZSBNYW5hZ2VyICAgLUMgdG8gQ2FuY2VsIg0KaWYgbm90ICVlcnJv 
 echo cmxldmVsJT09MSBzZXQgUElEPSVlcnJvcmxldmVsJSAmIGdvdG8gbG9vcA0KY2Fs 
-echo bCA6Q01EUyAvdHMgIkNCIENoYXR0aW8gYnkgTHVjYXMgRWxsaW90dCB3aXRoIElU 
-echo IENPTU1BTkQiDQppZiBub3QgJWVycm9ybGV2ZWwlPT0xIHNldCBQSUQ9JWVycm9y 
-echo bGV2ZWwlICYgZ290byBsb29wDQplY2hvIENvdWxkIG5vdCBmaW5kIHJ1bm5pbmcg 
-echo Y2hhdCBmaWxlLg0KaWYgZGVmaW5lZCBlbmRpdCBleGl0IC9iDQpzZXQgZW5kaXQ9 
-echo ZGVmaW5lZA0KdGltZW91dCAvdCA3ID5udWwNCmdvdG8gcmVhZA0KDQo6bG9vcA0K 
-echo ZWNobyBmb3VuZCBvbjogJVBJRCUNCjpsb29wZWQNCnRhc2tsaXN0IC9GSSAiUElE 
-echo IGVxICVQSUQlIiB8IGZpbmQgIk5vIHRhc2tzIGFyZSBydW5uaW5nIg0KaWYgJWVy 
-echo cm9ybGV2ZWwlPT0wIGdvdG8gb2ZmDQp0aW1lb3V0IC90IDEwID5udWwNCmdvdG8g 
-echo bG9vcGVkDQoNCjpvZmYNCmlmIG5vdCBleGlzdCBzZXR0aW5ncy5jbWQgZXhpdCAv 
-echo Yg0KY2FsbCBzZXR0aW5ncy5jbWQNCmlmIG5vdCBleGlzdCBcXCVoaW0lXENoYXRc 
-echo Y2hhdC50eHQgZXhpdCAvYg0KZWNobyBbU10lVElNRTogPTAlLVNFUlZFUn0gJW1l 
-echo JSBsZWZ0IHRoZSBzZXJ2ZXIgPj5cXCVoaW0lXENoYXRcY2hhdC50eHQNCmlmIG5v 
-echo dCBleGlzdCBcXCVoaW0lXENoYXRcbG9nLnR4dCBleGl0IC9iDQplY2hvICVUSU1F 
-echo OiA9MCU6ICAgJW1lJSAgTGVmdCA+PlxcJWhpbSVcQ2hhdFxsb2cudHh0DQpleGl0 
-echo IC9iDQoNCjpDTURTDQpzZXQgb2xkbnVtPU5PDQpzZXRsb2NhbCBFbmFibGVEZWxh 
-echo eWVkRXhwYW5zaW9uDQpwdXNoZCAiJVRFTVAlIg0KZm9yIC9GICJ0b2tlbnM9MSwy 
-echo IGRlbGltcz0jIiAlJWEgaW4gKCcicHJvbXB0ICMkSCMkRSMgJiBlY2hvIG9uICYg 
-echo Zm9yICUlYiBpbiAoMSkgZG8gcmVtIicpIGRvICgNCnNldCAiREVMPSUlYSINCikN 
-echo CnJlbSBQcmVwYXJlIGEgZmlsZSAiWCIgd2l0aCBvbmx5IG9uZSBkb3QNCjxudWwg 
-echo PiBYIHNldCAvcCAiLj0uIg0KDQoNCmlmICIlMSI9PSIvVFMiIGdvdG8gdHMNCmlm 
-echo ICIlMSI9PSIvdHMiIGdvdG8gdHMNCmlmICIlMSI9PSIvVHMiIGdvdG8gdHMNCmlm 
-echo ICIlMSI9PSIvdFMiIGdvdG8gdHMNCmlmICIlMSI9PSIvcyIgdGFza2xpc3QgL2Zp 
-echo ICJpbWFnZW5hbWUgZXEgY21kLmV4ZSIgL2ZvIGxpc3QgL3YgJiBleGl0IC9iDQpp 
-echo ZiAiJTEiPT0iL1MiIHRhc2tsaXN0IC9maSAiaW1hZ2VuYW1lIGVxIGNtZC5leGUi 
-echo IC9mbyBsaXN0IC92ICYgZXhpdCAvYg0KaWYgIiUxIj09Ii8/IiBnb3RvIGhlbHAN 
-echo CmdvdG8gbnh0DQoNCjp0cw0Kc2V0IG51bT0wDQp0YXNrbGlzdCAvZmkgImltYWdl 
-echo bmFtZSBlcSBjbWQuZXhlIiAvZm8gbGlzdCAvdiB8IGZpbmQgL0kgIldpbmRvdyBU 
-echo aXRsZToiID5TeXN0ZW0NCmZvciAvRiAidG9rZW5zPSoiICUlQSBpbiAgKFN5c3Rl 
-echo bSkgZG8gICgNCnNldCAvYSBudW0rPTENCnNldCBUaXRsZSFudW0hPSUlQQ0Kc2V0 
-echo IHRvdGFsbnVtPSFudW0hDQopDQoNCg0KOjogPT09PT09PT09PT09PT09PT09PT09 
-echo IFBJRCA9PT09PT09PT09PT09PT09PT09PT09PT0NCnNldCBudW09MA0KdGFza2xp 
-echo c3QgL2ZpICJpbWFnZW5hbWUgZXEgY21kLmV4ZSIgL2ZvIGxpc3QgL3YgfCBmaW5k 
-echo IC9JICJQSUQ6IiA+U3lzdGVtDQpmb3IgL0YgInRva2Vucz0qIiAlJUEgaW4gIChT 
-echo eXN0ZW0pIGRvICAoDQpzZXQgL2EgbnVtKz0xDQpzZXQgUElEIW51bSE9JSVBDQop 
-echo DQpzZXRsb2NhbCBFbmFibGVkZWxheWVkRXhwYW5zaW9uDQpzZXQgbnVtPTANCjp0 
-echo c2xvb3ANCnNldCAvYSBudW0rPTENCmlmICIlfjIiPT0iIiBleGl0IC9iIDINCmlm 
-echo ICIhVGl0bGUlbnVtJSEiPT0iV2luZG93IFRpdGxlOiAlfjIiIGdvdG8gaXNyaXRl 
-echo DQppZiAlbnVtJT09JXRvdGFsbnVtJSBnb3RvIG5vbmV0cw0KZ290byB0c2xvb3AN 
-echo Cjppc3JpdGUNCjo6d2luZG93IHdhcyBmb3VuZA0Kc2V0IHN0cj0hUElEJW51bSUh 
-echo DQpzZXQgInJlc3VsdD0lc3RyOjo9IiAmIHNldCAicmVzdWx0PSUiDQpzZXQgcmVz 
-echo dWx0PSVyZXN1bHQ6ID0lDQpwb3BkDQpleGl0IC9iICVyZXN1bHQlDQoNCjpub25l 
-echo dHMNCnBvcGQNCmVuZGxvY2FsDQpleGl0IC9iIDE= 
+echo bCA6Q01EUyAvdHMgIkNCIENoYXR0aW8gYnkgTHVjYXMgRWxsaW90dCAgICAgPT09 
+echo PT09PT09PSBFTlRFUiAtQyBUTyBDQU5DRUwgLUggRk9SIEhFTFAgLUIgRU5URVIg 
+echo U0NSSVBUID09PT09PT09PT09PSINCmlmIG5vdCAlZXJyb3JsZXZlbCU9PTEgc2V0 
+echo IFBJRD0lZXJyb3JsZXZlbCUgJiBnb3RvIGxvb3ANCmNhbGwgOkNNRFMgL3RzICJD 
+echo QiBDaGF0dGlvIGJ5IEx1Y2FzIEVsbGlvdHQgd2l0aCBJVCBDT01NQU5EIg0KaWYg 
+echo bm90ICVlcnJvcmxldmVsJT09MSBzZXQgUElEPSVlcnJvcmxldmVsJSAmIGdvdG8g 
+echo bG9vcA0KZWNobyBDb3VsZCBub3QgZmluZCBydW5uaW5nIGNoYXQgZmlsZS4NCmlm 
+echo IGRlZmluZWQgZW5kaXQgZXhpdCAvYg0Kc2V0IGVuZGl0PWRlZmluZWQNCnRpbWVv 
+echo dXQgL3QgNyA+bnVsDQpnb3RvIHJlYWQNCg0KOmxvb3ANCmVjaG8gZm91bmQgb246 
+echo ICVQSUQlDQo6bG9vcGVkDQp0YXNrbGlzdCAvRkkgIlBJRCBlcSAlUElEJSIgfCBm 
+echo aW5kICJObyB0YXNrcyBhcmUgcnVubmluZyINCmlmICVlcnJvcmxldmVsJT09MCBn 
+echo b3RvIG9mZg0KdGltZW91dCAvdCAxMCA+bnVsDQpnb3RvIGxvb3BlZA0KDQo6b2Zm 
+echo DQppZiBub3QgZXhpc3Qgc2V0dGluZ3MuY21kIGV4aXQgL2INCmNhbGwgc2V0dGlu 
+echo Z3MuY21kDQppZiBub3QgZXhpc3QgXFwlaGltJVxDaGF0XGNoYXQudHh0IGV4aXQg 
+echo L2INCmVjaG8gW1NdJVRJTUU6ID0wJS1TRVJWRVJ9ICVtZSUgbGVmdCB0aGUgc2Vy 
+echo dmVyID4+XFwlaGltJVxDaGF0XGNoYXQudHh0DQppZiBub3QgZXhpc3QgXFwlaGlt 
+echo JVxDaGF0XGxvZy50eHQgZXhpdCAvYg0KZWNobyAlVElNRTogPTAlOiAgICVtZSUg 
+echo IExlZnQgPj5cXCVoaW0lXENoYXRcbG9nLnR4dA0KZXhpdCAvYg0KDQo6Q01EUw0K 
+echo c2V0IG9sZG51bT1OTw0Kc2V0bG9jYWwgRW5hYmxlRGVsYXllZEV4cGFuc2lvbg0K 
+echo cHVzaGQgIiVURU1QJSINCmZvciAvRiAidG9rZW5zPTEsMiBkZWxpbXM9IyIgJSVh 
+echo IGluICgnInByb21wdCAjJEgjJEUjICYgZWNobyBvbiAmIGZvciAlJWIgaW4gKDEp 
+echo IGRvIHJlbSInKSBkbyAoDQpzZXQgIkRFTD0lJWEiDQopDQpyZW0gUHJlcGFyZSBh 
+echo IGZpbGUgIlgiIHdpdGggb25seSBvbmUgZG90DQo8bnVsID4gWCBzZXQgL3AgIi49 
+echo LiINCg0KDQppZiAiJTEiPT0iL1RTIiBnb3RvIHRzDQppZiAiJTEiPT0iL3RzIiBn 
+echo b3RvIHRzDQppZiAiJTEiPT0iL1RzIiBnb3RvIHRzDQppZiAiJTEiPT0iL3RTIiBn 
+echo b3RvIHRzDQppZiAiJTEiPT0iL3MiIHRhc2tsaXN0IC9maSAiaW1hZ2VuYW1lIGVx 
+echo IGNtZC5leGUiIC9mbyBsaXN0IC92ICYgZXhpdCAvYg0KaWYgIiUxIj09Ii9TIiB0 
+echo YXNrbGlzdCAvZmkgImltYWdlbmFtZSBlcSBjbWQuZXhlIiAvZm8gbGlzdCAvdiAm 
+echo IGV4aXQgL2INCmlmICIlMSI9PSIvPyIgZ290byBoZWxwDQpnb3RvIG54dA0KDQo6 
+echo dHMNCnNldCBudW09MA0KdGFza2xpc3QgL2ZpICJpbWFnZW5hbWUgZXEgY21kLmV4 
+echo ZSIgL2ZvIGxpc3QgL3YgfCBmaW5kIC9JICJXaW5kb3cgVGl0bGU6IiA+U3lzdGVt 
+echo DQpmb3IgL0YgInRva2Vucz0qIiAlJUEgaW4gIChTeXN0ZW0pIGRvICAoDQpzZXQg 
+echo L2EgbnVtKz0xDQpzZXQgVGl0bGUhbnVtIT0lJUENCnNldCB0b3RhbG51bT0hbnVt 
+echo IQ0KKQ0KDQoNCjo6ID09PT09PT09PT09PT09PT09PT09PSBQSUQgPT09PT09PT09 
+echo PT09PT09PT09PT09PT09DQpzZXQgbnVtPTANCnRhc2tsaXN0IC9maSAiaW1hZ2Vu 
+echo YW1lIGVxIGNtZC5leGUiIC9mbyBsaXN0IC92IHwgZmluZCAvSSAiUElEOiIgPlN5 
+echo c3RlbQ0KZm9yIC9GICJ0b2tlbnM9KiIgJSVBIGluICAoU3lzdGVtKSBkbyAgKA0K 
+echo c2V0IC9hIG51bSs9MQ0Kc2V0IFBJRCFudW0hPSUlQQ0KKQ0Kc2V0bG9jYWwgRW5h 
+echo YmxlZGVsYXllZEV4cGFuc2lvbg0Kc2V0IG51bT0wDQo6dHNsb29wDQpzZXQgL2Eg 
+echo bnVtKz0xDQppZiAiJX4yIj09IiIgZXhpdCAvYiAyDQppZiAiIVRpdGxlJW51bSUh 
+echo Ij09IldpbmRvdyBUaXRsZTogJX4yIiBnb3RvIGlzcml0ZQ0KaWYgJW51bSU9PSV0 
+echo b3RhbG51bSUgZ290byBub25ldHMNCmdvdG8gdHNsb29wDQo6aXNyaXRlDQo6Ondp 
+echo bmRvdyB3YXMgZm91bmQNCnNldCBzdHI9IVBJRCVudW0lIQ0Kc2V0ICJyZXN1bHQ9 
+echo JXN0cjo6PSIgJiBzZXQgInJlc3VsdD0lIg0Kc2V0IHJlc3VsdD0lcmVzdWx0OiA9 
+echo JQ0KcG9wZA0KZXhpdCAvYiAlcmVzdWx0JQ0KDQo6bm9uZXRzDQpwb3BkDQplbmRs 
+echo b2NhbA0KZXhpdCAvYiAx 
 echo -----END CERTIFICATE----- 
 )>>temp.txt 
 certutil -decode "temp.txt" "chat-listener.bat" >nul 
